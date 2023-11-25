@@ -1,28 +1,69 @@
 using UnityEngine;
-public class PlayerController : MonoBehaviour, IUpdateable
+public class PlayerController : Updateable, IDestroyable
 {
-    PlayerModel _playerModel;
-    public void Awake()
+    private PlayerModel _playerModel;
+    private Vector3 _posSpawn;
+
+    [SerializeField]
+    private int layerEnemy;
+    [SerializeField]
+    private int layerBullet;
+    [SerializeField]
+    private GameObject _bulletPrefab;
+    [SerializeField]
+    private Transform _origin;
+  
+    private void Awake()
     {
         _playerModel = GetComponent<PlayerModel>();
-        UpdateManager.Instance.Add(this);
     }
-
-    public void CustomUpdate()
+    public override void Start()
     {
-        var v = Input.GetAxisRaw("Vertical");
-        var h = Input.GetAxisRaw("Horizontal");
+        base.Start();
+        _posSpawn = transform.position;
+    }
+    public override void CustomUpdate()
+    {
+        var dir = GetInputDir();
 
-
-        var dir = new Vector3(h, 0, v);
-
-        if (dir == Vector3.zero) return;
-        _playerModel.Move(dir);
-        _playerModel.LookDir(dir);
-     
-  
+        if (dir != Vector3.zero)
+        {
+            _playerModel.MoveAndRotate(dir);
+        }
+        if(Input.GetMouseButtonDown(0))
+        {
+            _playerModel.Shoot(_bulletPrefab, _origin);
+        }
+    }
+    public Vector3 GetInputDir()
+    {
+        var v = Input.GetAxis("Vertical");
+        var h = Input.GetAxis("Horizontal");
+        if (h != 0 && v != 0)
+        {
+            if (Mathf.Abs(h) > Mathf.Abs(v))
+            {
+                v = 0;
+            }
+            else
+            {
+                h = 0;
+            }
+        }    
+        Vector3 inputDir = new Vector3(h, 0, v);
+        return inputDir.normalized;
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == layerEnemy || collision.gameObject.layer == layerBullet) 
+        {
+            Die();
+        }
+    }
 
-
+    public void Die()
+    {
+        _playerModel.Respawn(_posSpawn);
+    }
 }

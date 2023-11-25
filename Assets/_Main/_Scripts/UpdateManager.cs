@@ -3,36 +3,42 @@ using UnityEngine;
 
 public class UpdateManager : MonoBehaviour
 {
-    public static UpdateManager Instance { get;  private set; }
+    private List<Updateable> _objsToUpdate= new List<Updateable>();
+    public static UpdateManager Instance { get ; private set; }
 
-    private List<IUpdateable> objsToUpdate = new List<IUpdateable>();
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (Instance != null && Instance != this) 
         {
             Destroy(this);
         }
         else
         {
-            Instance = this;
+            Instance = this;         
         }
-
     }
+
     private void Update()
     { 
-        var count = objsToUpdate.Count;  //*QUEST [Porque es necesario almacenar en una variable temporal el dato?]
-        for (int i = 0; i < count; i++) /// for (int i = 0; i < *objsToUpdate.Length; i++)
+        var count = _objsToUpdate.Count;  //*QUEST [Porque es necesario almacenar en una variable temporal el dato?]
+        for (int i = 0; i < count; i++) /// y no hacer: for (int i = 0; i < *objsToUpdate.Length; i++)
         {
-            objsToUpdate[i].CustomUpdate();       
+            _objsToUpdate[i].CustomUpdate();       
         }
     }
-    public void Add(IUpdateable obj)
+    public void Add(Updateable obj)
     {
-        objsToUpdate.Add(obj);
+        if (!_objsToUpdate.Contains(obj))
+        {
+            _objsToUpdate.Add(obj);
+        }      
     }
 
-    public void Remove(IUpdateable obj)
+    public void Remove(Updateable obj)
     {
-        objsToUpdate.Remove(obj);
+        if (_objsToUpdate.Contains(obj))
+        {
+            _objsToUpdate.Remove(obj);
+        }
     }
 }
