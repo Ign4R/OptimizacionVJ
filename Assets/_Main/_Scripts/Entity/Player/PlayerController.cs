@@ -3,24 +3,20 @@ public class PlayerController : Updateable, IDestroyable
 {
     private PlayerModel _playerModel;
     private Vector3 _posSpawn;
+    private int _layerEnemy;
+    private int _layerBulletE;
 
-    [SerializeField]
-    private int layerEnemy;
-    [SerializeField]
-    private int layerBullet;
-    [SerializeField]
-    private GameObject _bulletPrefab;
-    [SerializeField]
-    private Transform _origin;
-  
     private void Awake()
     {
         _playerModel = GetComponent<PlayerModel>();
+        _layerEnemy = LayerMask.NameToLayer("Enemy");
+        _layerBulletE = LayerMask.NameToLayer("BulletEnemy");
     }
     public override void Start()
     {
         base.Start();
         _posSpawn = transform.position;
+      
     }
     public override void CustomUpdate()
     {
@@ -28,11 +24,11 @@ public class PlayerController : Updateable, IDestroyable
 
         if (dir != Vector3.zero)
         {
-            _playerModel.MoveAndRotate(dir);
+            _playerModel.MoveAndRotate(dir,dir);
         }
         if(Input.GetMouseButtonDown(0))
         {
-            _playerModel.Shoot(_bulletPrefab, _origin);
+            _playerModel.Shoot();
         }
     }
     public Vector3 GetInputDir()
@@ -53,15 +49,13 @@ public class PlayerController : Updateable, IDestroyable
         Vector3 inputDir = new Vector3(h, 0, v);
         return inputDir.normalized;
     }
-
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.layer == layerEnemy || collision.gameObject.layer == layerBullet) 
+        if (collision.gameObject.layer == _layerEnemy || collision.gameObject.layer == _layerBulletE) 
         {
             Die();
         }
     }
-
     public void Die()
     {
         _playerModel.Respawn(_posSpawn);
