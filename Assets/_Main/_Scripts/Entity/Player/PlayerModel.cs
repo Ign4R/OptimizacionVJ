@@ -8,6 +8,8 @@ public class PlayerModel : BaseModel
         base.Awake();
         _bulletType = LayerMask.NameToLayer("BulletPlayer");
     }
+
+
     public void Respawn(Vector3 pos)
     {
         transform.position = pos;

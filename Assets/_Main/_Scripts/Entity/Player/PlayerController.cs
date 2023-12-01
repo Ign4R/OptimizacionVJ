@@ -6,20 +6,27 @@ public class PlayerController : Updateable, IDestroyable
     private int _layerEnemy;
     private int _layerBulletE;
 
+    [SerializeField]
+    private GameObject _bullet;
+
+    public GameObject Bullet { get => _bullet; }
+
     private void Awake()
-    {
+    {    
         _playerModel = GetComponent<PlayerModel>();
         _layerEnemy = LayerMask.NameToLayer("Enemy");
         _layerBulletE = LayerMask.NameToLayer("BulletEnemy");
+
+
     }
     public override void Start()
     {
         base.Start();
         _posSpawn = transform.position;
-      
     }
     public override void CustomUpdate()
     {
+       
         var dir = GetInputDir();
 
         if (dir != Vector3.zero)
@@ -28,7 +35,8 @@ public class PlayerController : Updateable, IDestroyable
         }
         if(Input.GetMouseButtonDown(0))
         {
-            _playerModel.Shoot();
+            var objPool = GameManager.Instance.BulletPool;
+            _playerModel.Shoot(objPool);
         }
     }
     public Vector3 GetInputDir()

@@ -2,25 +2,39 @@
 
 public class Bullet : Updateable
 {
-    [SerializeField]
-    private float _speed;
     private int _layerWall;
     private Rigidbody _rb;
-    public override void Start()
+    private float _currentTime;
+    [SerializeField] private float timeToDeactivate = 10;
+    [SerializeField] private float _speed = 40;
+
+    private void Awake()
     {
-        base.Start();
         _layerWall = LayerMask.NameToLayer("Wall");
         _rb = GetComponent<Rigidbody>();
+
     }
+
     public override void CustomUpdate()
     {
         Travel();
     }
+    private void OnEnable()
+    {
+        _currentTime = 0f;
+    }
+
     public void Travel()
     {
         if (_rb != null)
         {
             _rb.velocity = transform.forward * _speed;
+        }
+
+        // Verificar si ha pasado suficiente tiempo sin colisionar
+        if (_currentTime >= timeToDeactivate)
+        {         
+            ReturnBullet();
         }
     }
     private void OnTriggerEnter(Collider other)
@@ -28,17 +42,21 @@ public class Bullet : Updateable
         
         if (other.gameObject.TryGetComponent<IDestroyable>(out var target))
         {
-            //TODO: Llamar al pool
+            ReturnBullet();
             target.Die();
-            Destroy(gameObject); //SACAR
+          
         }
         if (other.gameObject.layer == _layerWall) 
         {
-            //TODO: Llamar al pool
-            Destroy(gameObject); //SACAR
+            ReturnBullet();
         }
     }
 
+    public void ReturnBullet()
+    {
+        _currentTime = 0;
+        GameManager.Instance.BulletPool.ReturnToPool(gameObject);
+    }
   
 
 

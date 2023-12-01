@@ -6,12 +6,9 @@ public class BaseModel : MonoBehaviour
     [SerializeField]
     private float _speed;
     [SerializeField]
-    protected GameObject _bulletPrefab;
-    [SerializeField]
     protected Transform _origin;
     protected int _bulletType;
 
-    private Rigidbody _rb;
     public float Speed { get => _speed; private set => _speed = value; }
     public Rigidbody Rb { get ; private set ; }
 
@@ -33,12 +30,11 @@ public class BaseModel : MonoBehaviour
         transform.rotation = Quaternion.LookRotation(dir.normalized);
     }
 
-    public void Shoot()
+    public void Shoot(ObjectPool objectPool)
     {
-        //TODO: Llamar al objectPool
-        var bullet = Instantiate(_bulletPrefab, _origin.position, _origin.rotation);
+        var bullet = objectPool.GetPooledObject();
+        bullet.transform.SetPositionAndRotation(_origin.position, _origin.rotation);
         bullet.gameObject.layer = _bulletType;
-
     }
 
 }
