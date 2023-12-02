@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-///Hacemos un pool generico para especificar de que tipo de clase que herede de MB queremos usarlo de pool
 public class ObjectPool
 {
     private FactoryObject _factoryObj;
     private  Queue<GameObject> _pooledObjects = new Queue<GameObject>();
+
+    public Queue<GameObject> PooledObjects { get => _pooledObjects; }
 
     public ObjectPool(FactoryObject factoryObj)
     {
@@ -35,8 +36,9 @@ public class ObjectPool
             _pooledObjects.Enqueue(poolObject); /// para sacar el elemento que primero se agrego o el mas antiguo
             return poolObject;
         }
+
     }
-    public void ReturnToPool(GameObject poolObject) /// esta funcion se usa para devolver al pool la bala (es cuando ya no necesita ser usada)
+    public void ReturnToPool(GameObject poolObject) /// esta funcion se usa para devolver al pool el obj (es cuando ya no necesita ser usado)
     {
         poolObject.gameObject.SetActive(false);
         _pooledObjects.Enqueue(poolObject);

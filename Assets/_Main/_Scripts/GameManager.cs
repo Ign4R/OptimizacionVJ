@@ -1,43 +1,100 @@
 ﻿using UnityEngine;
 
 public class GameManager : Updateable
-{
-    [SerializeField] private int _bulletsToPool = 10;
+{  
+    private float _currentTime;
+    private int _counterEnemies;
+    [SerializeField] private int _maxEnemies;
+    [SerializeField] float _waitTimeToSpawn = 5f;
+    [SerializeField] private int _bulletsInPool = 10;
+    [SerializeField] private int _enemiesInPool = 100;
+
+    [SerializeField] private Transform _positionSpawn;
+
     [Header("Prefabs")]
-    [SerializeField] private GameObject _bulletGame;
+    [SerializeField] private GameObject _bullet;
     [SerializeField] private GameObject _enemy;
-    public static GameManager Instance { get; private set; }
+
+
+
+
+    public bool CanRunSpawn { get; private set; }
     public ObjectPool BulletPool { get ; private set ; }
+    public ObjectPool EnemyPool { get ; private set ; }
+    public static GameManager Instance { get; private set; }
 
     private void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(this);
+            Destroy(gameObject);
         }
         else
         {
             Instance = this;
-
-
-            FactoryObject bulletFactory = GetBulletFactory();
-            BulletPool = GetBulletPool(bulletFactory);
-          
+            FactoryObject bulletFactory = GetFactory("Bullets",_bullet);
+            FactoryObject enemyFactory = GetFactory("Enemies", _enemy);
+            BulletPool = GetPool(bulletFactory, _bulletsInPool);
+            EnemyPool = GetPool(enemyFactory, _enemiesInPool);         
+            CanRunSpawn = true;
+            _currentTime = _waitTimeToSpawn;
         }
     }
-
-    public FactoryObject GetBulletFactory()
+    public override void CustomUpdate()
     {
-        GameObject parentBullets = new GameObject("Bullets");
-        FactoryObject bulletFactory = new FactoryObject(_bulletGame, parentBullets.transform);
+        TimerToSpawn();
+    }
+    public FactoryObject GetFactory(string nameParent, GameObject prefab)
+    {
+        GameObject parentBullets = new GameObject(nameParent);
+        FactoryObject bulletFactory = new FactoryObject(prefab, parentBullets.transform);
 
         return bulletFactory;
     }
 
-    public ObjectPool GetBulletPool(FactoryObject factoryObject)
+    public ObjectPool GetPool(FactoryObject factoryObject, int countObj)
     {
-        var bulletPool = new ObjectPool(factoryObject);
-        bulletPool.Initialization(_bulletsToPool);
-        return bulletPool;
+        var pool = new ObjectPool(factoryObject);
+        pool.Initialization(countObj);
+        return pool;
+    }
+    public void EnemyDie()
+    {
+        _counterEnemies++;
+        if (_counterEnemies < _maxEnemies)
+        {      
+            if (EnemyPool.PooledObjects.Count > 0)
+            {
+                CanRunSpawn = EnemyPool.PooledObjects.Count > 0;
+            }
+            else
+            {
+                CanRunSpawn = false;
+            }
+        }
+        else
+        {
+            //TODO: Pop.Up GameOver Screen
+        }
+           
+    }
+    public void TimerToSpawn()
+    {      
+        if (CanRunSpawn)
+        {
+            _currentTime += Time.deltaTime;
+            if (_currentTime >= _waitTimeToSpawn)
+            {
+                _currentTime = 0;
+                var enemy = EnemyPool.GetPooledObject();
+                enemy.transform.position = _positionSpawn.position;
+            }
+        }
+    }
+
+    public void CheckCountInPool()
+    {
+        CanRunSpawn = EnemyPool?.PooledObjects.Count > 0;
     }
 }
+

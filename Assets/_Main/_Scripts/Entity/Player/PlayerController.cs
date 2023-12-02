@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 public class PlayerController : Updateable, IDestroyable
 {
@@ -64,8 +65,9 @@ public class PlayerController : Updateable, IDestroyable
             Die();
         }
     }
+   
     public void Die()
-    {
+    {        
         _playerModel.Respawn(_posSpawn);
     }
 }
