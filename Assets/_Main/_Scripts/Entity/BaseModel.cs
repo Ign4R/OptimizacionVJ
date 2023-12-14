@@ -10,7 +10,6 @@ public class BaseModel : Updateable
     [SerializeField]
     protected Transform _origin;
     protected int _bulletType;
-    private int _myLayer;
 
     public float Speed { get => _speed; private set => _speed = value; }
 
@@ -44,11 +43,21 @@ public class BaseModel : Updateable
         bullet.transform.SetPositionAndRotation(_origin.position, _origin.rotation);
         bullet.gameObject.layer = _bulletType;
     }
-    public IEnumerator NotCollisionEntity(int layer)
+    public IEnumerator NotCollisionEntity()
     {
-        gameObject.layer = _layIgnoreEntity; //layer que no detecta collision con alguna entidad
-        yield return new WaitForSeconds(2f); // Ajusta el tiempo según sea necesario
-        gameObject.layer = layer;
+        //Setea la layer a una layer que ignore las entidades
+        if(Rb != null)
+        {
+            Rb.detectCollisions = false;
+            yield return new WaitForSeconds(1f);
+            Rb.detectCollisions = true;
+        }
+        else
+        {
+            yield return null;
+        }
+
+
 
     }
 }

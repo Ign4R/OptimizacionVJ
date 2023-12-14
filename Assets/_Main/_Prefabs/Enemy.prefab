@@ -79,6 +79,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cooldown: 4
+  maxStuckFrames: 11
 --- !u!114 &6388716524334034208
 MonoBehaviour:
   m_ObjectHideFlags: 0

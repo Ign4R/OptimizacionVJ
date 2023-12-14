@@ -21,7 +21,10 @@ public class EnemyController : Updateable, IDestroyable
     Vector3.back,
     Vector3.right,
     Vector3.left};
-    private bool hasCollided;
+    private Vector3 _lastPosition;
+    private int stuckFrameCounter;
+    [SerializeField]private int maxStuckFrames = 15;
+    private bool canMove = true;
 
     private void Awake()
     {
@@ -29,17 +32,46 @@ public class EnemyController : Updateable, IDestroyable
         SetLayers();
         SetCooldown();
         _availables = _dirsAvailables.ToArray();
+       
     }
 
     public override void CustomUpdate()
     {
+
         if (gameObject.activeSelf) 
         {
             TimerToShoot();
-            _enemyModel.MoveAndRotate(transform.forward, _direction);
-        }
+            if (canMove)
+            {
+                
+                _enemyModel.MoveAndRotate(transform.forward, _direction);
+            }
+            // Checkea si la pos actual es igual a la anterior posicion
+            if (transform.position == _lastPosition)
+            {
+                // incrementamos el contador
+                stuckFrameCounter++;
 
+                // si excede el limite cambiamos la dir
+                if (stuckFrameCounter >= maxStuckFrames)
+                {
+                    // cambiamos a una dir random
+                    GetRandomDir();
+                    // reseteamos el contador
+                    stuckFrameCounter = 0;
+                }
+            }
+            else
+            {
+                // si la pos cambio, reseteamos el contador
+                stuckFrameCounter = 0;
+            }
+            // actualiza la ultima posicion
+            _lastPosition = transform.position;
+        }
     }
+
+    
     private void OnCollisionEnter(Collision collision)
     {    
         if (collision.gameObject.layer == _layerTarget)
@@ -47,20 +79,11 @@ public class EnemyController : Updateable, IDestroyable
             Die();
         }
 
-        if (collision.gameObject.layer == _layerWall && collision.gameObject.layer != gameObject.layer)
-        {
-            GetRandomDir();
-        }
-
-        else if (collision.gameObject.layer == gameObject.layer)
+        if (collision.gameObject.layer == gameObject.layer)
         {
             _direction = -_direction;
-
         }
-
-
     }
-
 
     public void TimerToShoot()
     {
@@ -105,7 +128,7 @@ public class EnemyController : Updateable, IDestroyable
         GameManager.Instance?.CheckCountInPool();
         _direction = transform.forward;
         SetCooldown();
-        StartCoroutine(_enemyModel.NotCollisionEntity(_myLayer));
+        StartCoroutine(_enemyModel.NotCollisionEntity());
 
     }
     public void Die()

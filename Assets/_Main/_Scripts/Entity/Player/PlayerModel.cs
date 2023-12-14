@@ -15,7 +15,6 @@ public class PlayerModel : BaseModel
     public void Respawn(Vector3 pos)
     {
         Rb.velocity = Vector3.zero;
-        StartCoroutine(NotCollisionEntity(_myLayer));
         transform.position = pos;
     }
 
