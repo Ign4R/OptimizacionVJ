@@ -11,6 +11,7 @@ public class EnemyController : Updateable, IDestroyable
     private EnemyModel _enemyModel;
     private int _layerTarget;
     private int _layerWall;
+    private int _myLayer;
     private float _currentCooldown;
     private Vector3 _direction;
 
@@ -46,32 +47,20 @@ public class EnemyController : Updateable, IDestroyable
             Die();
         }
 
-        if (!hasCollided)
+        if (collision.gameObject.layer == _layerWall && collision.gameObject.layer != gameObject.layer)
         {
-            if (collision.gameObject.layer == _layerWall && collision.gameObject.layer != gameObject.layer)
-            {
-                GetRandomDir();
-            }
+            GetRandomDir();
+        }
 
-            else if (collision.gameObject.layer == gameObject.layer)
-            {
-                _direction = -_direction;
-                hasCollided = true;
-            }
+        else if (collision.gameObject.layer == gameObject.layer)
+        {
+            _direction = -_direction;
 
         }
 
 
     }
-    private void OnCollisionExit(Collision collision)
-    {
 
-        if (collision.gameObject.layer == 10)
-        {
-            hasCollided = false;
-        }
-
-    }
 
     public void TimerToShoot()
     {
@@ -109,13 +98,14 @@ public class EnemyController : Updateable, IDestroyable
     {
         _layerTarget = LayerMask.NameToLayer("Player");
         _layerWall = LayerMask.NameToLayer("Wall");
+        _myLayer = LayerMask.NameToLayer("Enemy");
     }
     private void OnEnable()
     {
         GameManager.Instance?.CheckCountInPool();
         _direction = transform.forward;
         SetCooldown();
-        StartCoroutine(_enemyModel.NotCollisionEntity());
+        StartCoroutine(_enemyModel.NotCollisionEntity(_myLayer));
 
     }
     public void Die()
