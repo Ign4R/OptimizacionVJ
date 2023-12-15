@@ -3,8 +3,8 @@
 public class GameManager : Updateable
 {  
     private float _currentTime;
-    private int _counterEnemies;
-    [SerializeField] private int _maxEnemies;
+    private int _entityCount;
+    [SerializeField] private int _maxEntities;
     [SerializeField] float _waitTimeToSpawn = 5f;
     [SerializeField] private int _bulletsInPool = 10;
     [SerializeField] private int _enemiesInPool = 100;
@@ -42,6 +42,7 @@ public class GameManager : Updateable
     }
     public override void CustomUpdate()
     {
+   
         TimerToSpawn();
     }
     public FactoryObject GetFactory(string nameParent, GameObject prefab)
@@ -58,19 +59,12 @@ public class GameManager : Updateable
         pool.Initialization(countObj);
         return pool;
     }
-    public void EnemyDie()
+    public void CounterEntity()
     {
-        _counterEnemies++;
-        if (_counterEnemies < _maxEnemies)
-        {      
-            if (EnemyPool.PooledObjects.Count > 0)
-            {
-                CanRunSpawn = EnemyPool.PooledObjects.Count > 0;
-            }
-            else
-            {
-                CanRunSpawn = false;
-            }
+        _entityCount++;
+        if (_entityCount < _maxEntities)
+        {
+            CheckCountInPool();
         }
         else
         {
@@ -78,6 +72,8 @@ public class GameManager : Updateable
         }
            
     }
+
+
     public void TimerToSpawn()
     {      
         if (CanRunSpawn)
@@ -94,7 +90,15 @@ public class GameManager : Updateable
 
     public void CheckCountInPool()
     {
-        CanRunSpawn = EnemyPool?.PooledObjects.Count > 0;
+        if (EnemyPool?.PooledObjects.Count >= 1) 
+        {
+            CanRunSpawn = true;
+        }
+        else 
+        {
+            CanRunSpawn = false;
+        }
+      
     }
 }
 

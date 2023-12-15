@@ -1,14 +1,20 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
-public class PlayerController : Updateable, IDestroyable
+public class PlayerController : Updateable
 {
     private PlayerModel _playerModel;
+
     private Vector3 _posSpawn;
+    private LayerMask _layerColl;
     private int _layerEnemy;
     private int _layerBulletE;
 
     [SerializeField]
     private GameObject _bullet;
+    [SerializeField]
+    private float _radius;
+
 
     public GameObject Bullet { get => _bullet; }
 
@@ -23,13 +29,15 @@ public class PlayerController : Updateable, IDestroyable
     public override void Start()
     {
         base.Start();
-        _posSpawn = transform.position;
+        _playerModel.SetPosSpawn(transform.position);
+      
     }
     public override void CustomUpdate()
     {
-       
-        var dir = GetInputDir();
+        CheckCollisionDie();
 
+        var dir = GetInputDir();
+    
         if (dir != Vector3.zero)
         {
             _playerModel.MoveAndRotate(dir,dir);
@@ -58,16 +66,24 @@ public class PlayerController : Updateable, IDestroyable
         Vector3 inputDir = new Vector3(h, 0, v);
         return inputDir.normalized;
     }
-    private void OnCollisionEnter(Collision collision)
+  
+    public void CheckCollisionDie()
     {
-        if (collision.gameObject.layer == _layerEnemy || collision.gameObject.layer == _layerBulletE) 
+        bool hasCollision = _playerModel.CollisionNonAlloc(_radius,_layerEnemy);
+        if (hasCollision)
         {
-            Die();
+            _playerModel.Colls[0].GetComponent<IDestroyable>().Die();
+            Respawn();
         }
     }
-   
-    public void Die()
-    {        
-        _playerModel.Respawn(_posSpawn);
+    public void Respawn()
+    {
+        _playerModel.Die();
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.black;
+        Gizmos.DrawWireSphere(transform.position, _radius);
     }
 }

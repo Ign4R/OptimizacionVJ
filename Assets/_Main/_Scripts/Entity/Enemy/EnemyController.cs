@@ -4,85 +4,97 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.ProBuilder.MeshOperations;
 
-public class EnemyController : Updateable, IDestroyable
+public class EnemyController : Updateable
 {
     [SerializeField] private float _cooldown = 10;
+    [SerializeField] private int maxStuckFrames = 15;
+    [SerializeField] private float _radius = 4;
+    [SerializeField] private LayerMask _layerColls;
+
 
     private EnemyModel _enemyModel;
-    private int _layerTarget;
-    private int _layerWall;
-    private int _myLayer;
-    private float _currentCooldown;
-    private Vector3 _direction;
+    private Collider[] _colls = new Collider[5];
 
-    private Vector3[] _availables = new Vector3[3];
-    private HashSet<Vector3> _dirsAvailables = new HashSet<Vector3> 
+
+    private int stuckFrameCounter;
+    private int _myLayer;
+    private int _layerTarget;
+    private float _currentCooldown;
+
+
+    private Vector3 _lastPosition;
+    private Vector3 _direction;
+    private Vector3[] _availables = new Vector3[4];
+    private HashSet<Vector3> _dirsAvailables = new HashSet<Vector3>
     {Vector3.forward,
     Vector3.back,
     Vector3.right,
     Vector3.left};
-    private Vector3 _lastPosition;
-    private int stuckFrameCounter;
-    [SerializeField]private int maxStuckFrames = 15;
+
     private bool canMove = true;
+    private bool isDestroyed = false;
+    private bool canColl = true;
 
     private void Awake()
     {
+        _myLayer = LayerMask.NameToLayer("Enemy");
+        _layerTarget = LayerMask.NameToLayer("Player");
         _enemyModel = GetComponent<EnemyModel>();
-        SetLayers();
-        SetCooldown();
         _availables = _dirsAvailables.ToArray();
-       
+
+        SetCooldown();
+
     }
 
     public override void CustomUpdate()
     {
-
-        if (gameObject.activeSelf) 
+        CheckCollisionEntity();
+        CheckStuckFrames();
+        if (gameObject.activeSelf)
         {
             TimerToShoot();
-            if (canMove)
-            {
-                
-                _enemyModel.MoveAndRotate(transform.forward, _direction);
-            }
-            // Checkea si la pos actual es igual a la anterior posicion
-            if (transform.position == _lastPosition)
-            {
-                // incrementamos el contador
-                stuckFrameCounter++;
-
-                // si excede el limite cambiamos la dir
-                if (stuckFrameCounter >= maxStuckFrames)
-                {
-                    // cambiamos a una dir random
-                    GetRandomDir();
-                    // reseteamos el contador
-                    stuckFrameCounter = 0;
-                }
-            }
-            else
-            {
-                // si la pos cambio, reseteamos el contador
-                stuckFrameCounter = 0;
-            }
-            // actualiza la ultima posicion
-            _lastPosition = transform.position;
+            MoveEntity();    
         }
     }
 
-    
-    private void OnCollisionEnter(Collision collision)
-    {    
-        if (collision.gameObject.layer == _layerTarget)
+    public void MoveEntity()
+    {
+        if (canMove)
         {
-            Die();
+            _enemyModel.MoveAndRotate(transform.forward, _direction);
         }
+    }
+    public void CheckCollisionEntity()
+    {
+        bool collisionDetected = _enemyModel.CollisionNonAlloc(_radius, _layerTarget);
 
-        if (collision.gameObject.layer == gameObject.layer)
+        if (collisionDetected)
         {
-            _direction = -_direction;
+            canMove = false;
         }
+    }
+    public void CheckStuckFrames()
+    {
+        // Checkea si la pos actual es igual a la anterior posicion
+        if ((transform.position - _lastPosition).magnitude < 0.1f)
+        {
+            // incrementamos el contador
+            stuckFrameCounter++;
+            // si excede el limite cambiamos la dir
+            if (stuckFrameCounter >= maxStuckFrames)
+            {
+                _direction = GetRandomDir();
+                canMove = true;
+                stuckFrameCounter = 0;
+            }
+        }
+        else
+        {
+            // si la pos cambio, reseteamos el contador
+            stuckFrameCounter = 0;
+        }
+        // actualiza la ultima posicion
+        _lastPosition = transform.position;
     }
 
     public void TimerToShoot()
@@ -96,20 +108,21 @@ public class EnemyController : Updateable, IDestroyable
         }
     }
 
-    public void GetRandomDir()
-    {     
-
-        if (_direction != Vector3.zero)
+    public Vector3 GetRandomDir()
+    {
+        int randomInt = Random.Range(0, 4);
+        switch (randomInt)
         {
-            var dirRemove = _direction;
-            _dirsAvailables.Remove(_direction);
-            _availables = _dirsAvailables.ToArray();
-            _dirsAvailables.Add(dirRemove);
-            _direction = _availables[Random.Range(0, _availables.Length)];
-        }
-        else
-        {
-            _direction = transform.forward;
+            case 0:
+                return Vector3.forward;
+            case 1:
+                return Vector3.right;
+            case 2:
+                return Vector3.back;
+            case 3:
+                return Vector3.left;
+            default:
+                return Vector3.zero;
         }
 
     }
@@ -117,27 +130,20 @@ public class EnemyController : Updateable, IDestroyable
     {
         _currentCooldown = _cooldown;
     }
-    public void SetLayers()
-    {
-        _layerTarget = LayerMask.NameToLayer("Player");
-        _layerWall = LayerMask.NameToLayer("Wall");
-        _myLayer = LayerMask.NameToLayer("Enemy");
-    }
+
     private void OnEnable()
     {
+        isDestroyed = false;
         GameManager.Instance?.CheckCountInPool();
+        //StartCoroutine(_enemyModel.NotCollisionEntity(_myLayer));
         _direction = transform.forward;
         SetCooldown();
-        StartCoroutine(_enemyModel.NotCollisionEntity());
 
     }
-    public void Die()
+    private void OnDrawGizmos()
     {
-        GameManager.Instance.EnemyPool.ReturnToPool(gameObject);
-        GameManager.Instance.EnemyDie();
-        print("Die Enemy");
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, _radius);
     }
-
-
-
 }
+

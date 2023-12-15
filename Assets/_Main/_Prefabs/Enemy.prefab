@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3367942137253536451}
   - component: {fileID: 3367942137253536448}
-  - component: {fileID: 3367942137253536449}
   - component: {fileID: 6388716524334034209}
   - component: {fileID: 6388716524334034208}
+  - component: {fileID: 5899480511629775193}
   m_Layer: 10
   m_Name: Enemy
   m_TagString: Untagged
@@ -46,26 +46,13 @@ Rigidbody:
   m_GameObject: {fileID: 3367942137253536460}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 20
+  m_Drag: 14
   m_AngularDrag: 0.05
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!65 &3367942137253536449
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3367942137253536460}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 4.33, y: 3.403141, z: 4.82065}
-  m_Center: {x: 0, y: 1.69, z: 0.41032517}
 --- !u!114 &6388716524334034209
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79,7 +66,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cooldown: 4
-  maxStuckFrames: 11
+  maxStuckFrames: 6
+  _radius: 4
+  _layerColls:
+    serializedVersion: 2
+    m_Bits: 1536
 --- !u!114 &6388716524334034208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,6 +85,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 14
   _origin: {fileID: 5849175849890798409}
+--- !u!135 &5899480511629775193
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3367942137253536460}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 4
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3367942137437891127
 GameObject:
   m_ObjectHideFlags: 0
@@ -201,7 +205,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4537120829631162676}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.02, y: 2.543, z: 4.628}
+  m_LocalPosition: {x: 0.02, y: 2.25, z: 4.628}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

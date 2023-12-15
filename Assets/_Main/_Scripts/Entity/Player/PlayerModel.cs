@@ -1,21 +1,27 @@
 using System;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
-public class PlayerModel : BaseModel
+public class PlayerModel : BaseModel, IDestroyable
 {
-    private int _myLayer;
+    private Vector3 _posSpawn;
     public override void Awake()
     {
         base.Awake();
         _bulletType = LayerMask.NameToLayer("BulletPlayer");
-        _myLayer = LayerMask.NameToLayer("Player");
     }
 
-
-    public void Respawn(Vector3 pos)
+    public void Die()
     {
+        _destroyed = false;
         Rb.velocity = Vector3.zero;
-        transform.position = pos;
+        transform.position = _posSpawn;
     }
+
+    public void SetPosSpawn(Vector3 pos)
+    {
+        _posSpawn = pos;
+    }
+
 
 }
