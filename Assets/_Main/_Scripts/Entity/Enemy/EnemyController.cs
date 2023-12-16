@@ -7,7 +7,7 @@ using UnityEngine.ProBuilder.MeshOperations;
 public class EnemyController : Updateable
 {
     [SerializeField] private float _cooldown = 10;
-    [SerializeField] private int maxStuckFrames = 15;
+    [SerializeField] private float _maxStuckTime = 0.5f;
     [SerializeField] private float _radius = 4;
     [SerializeField] private LayerMask _layerColls;
 
@@ -16,7 +16,7 @@ public class EnemyController : Updateable
     private Collider[] _colls = new Collider[5];
 
 
-    private int stuckFrameCounter;
+    private float _stuckTime;
     private int _myLayer;
     private int _layerTarget;
     private float _currentCooldown;
@@ -24,23 +24,15 @@ public class EnemyController : Updateable
 
     private Vector3 _lastPosition;
     private Vector3 _direction;
-    private Vector3[] _availables = new Vector3[4];
-    private HashSet<Vector3> _dirsAvailables = new HashSet<Vector3>
-    {Vector3.forward,
-    Vector3.back,
-    Vector3.right,
-    Vector3.left};
+
 
     private bool canMove = true;
-    private bool isDestroyed = false;
-    private bool canColl = true;
 
     private void Awake()
     {
         _myLayer = LayerMask.NameToLayer("Enemy");
         _layerTarget = LayerMask.NameToLayer("Player");
         _enemyModel = GetComponent<EnemyModel>();
-        _availables = _dirsAvailables.ToArray();
 
         SetCooldown();
 
@@ -75,25 +67,26 @@ public class EnemyController : Updateable
     }
     public void CheckStuckFrames()
     {
-        // Checkea si la pos actual es igual a la anterior posicion
         if ((transform.position - _lastPosition).magnitude < 0.1f)
         {
-            // incrementamos el contador
-            stuckFrameCounter++;
-            // si excede el limite cambiamos la dir
-            if (stuckFrameCounter >= maxStuckFrames)
+            // Incrementamos el contador de tiempo
+            _stuckTime += Time.deltaTime;
+
+            // Si excede el límite de tiempo, cambiamos la dirección
+            if (_stuckTime >= _maxStuckTime)
             {
                 _direction = GetRandomDir();
                 canMove = true;
-                stuckFrameCounter = 0;
+                _stuckTime = 0f;
             }
         }
         else
         {
-            // si la pos cambio, reseteamos el contador
-            stuckFrameCounter = 0;
+            // Si la posición cambió, reseteamos el contador de tiempo
+            _stuckTime = 0f;
         }
-        // actualiza la ultima posicion
+
+        // Actualiza la última posición
         _lastPosition = transform.position;
     }
 
@@ -133,7 +126,6 @@ public class EnemyController : Updateable
 
     private void OnEnable()
     {
-        isDestroyed = false;
         GameManager.Instance?.CheckCountInPool();
         //StartCoroutine(_enemyModel.NotCollisionEntity(_myLayer));
         _direction = transform.forward;
