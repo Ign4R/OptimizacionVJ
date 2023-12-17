@@ -6,6 +6,7 @@ public class Updateable : MonoBehaviour
     {
         UpdateManager.Instance.Add(this);
     }
+    ///Especializacion
     public virtual void CustomUpdate()
     {
         ///Se deja este metodo vacio para que las clases derivadas lo modifiquen a su gusto: Player y Enemy

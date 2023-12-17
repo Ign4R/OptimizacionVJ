@@ -20,6 +20,8 @@ public class ObjectPool
         for (int i = 0; i < countToPool; i++)
         {
             var obj = _factoryObj.CreateObj();
+
+            obj.gameObject.name = obj.gameObject.name + i;
             obj.SetActive(false);
             _pooledObjects.Enqueue(obj.gameObject); /// se utiliza para agregar un elemento al final de la cola
         }

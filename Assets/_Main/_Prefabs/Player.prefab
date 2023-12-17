@@ -194,7 +194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bullet: {fileID: 388889151532357120, guid: b8d242c7d45231442a3b9f229f601e7f, type: 3}
-  _radius: 3
+  _radius: 4
 --- !u!114 &6388716523076839899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,9 +209,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 17
   _origin: {fileID: 2826114466699022416}
-  _layerColl:
-    serializedVersion: 2
-    m_Bits: 1024
 --- !u!135 &239085300151578799
 SphereCollider:
   m_ObjectHideFlags: 0

@@ -13,11 +13,15 @@ public class PlayerModel : BaseModel, IDestroyable
 
     public void Die()
     {
-        _destroyed = false;
-        Rb.velocity = Vector3.zero;
-        transform.position = _posSpawn;
+        print("JUGADOR MUERTO");
+        gameObject.SetActive(false);
+        //StartCoroutine(RespawnImmunity());
+        //_destroyed = false;
+        //Rb.velocity = Vector3.zero;
+        //gameObject.SetActive(false);
+        //transform.position = _posSpawn;
     }
-
+  
     public void SetPosSpawn(Vector3 pos)
     {
         _posSpawn = pos;

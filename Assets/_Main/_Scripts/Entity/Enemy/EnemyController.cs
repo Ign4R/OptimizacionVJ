@@ -9,37 +9,43 @@ public class EnemyController : Updateable
     [SerializeField] private float _cooldown = 10;
     [SerializeField] private float _maxStuckTime = 0.5f;
     [SerializeField] private float _radius = 4;
-    [SerializeField] private LayerMask _layerColls;
+   
 
 
     private EnemyModel _enemyModel;
 
     private float _stuckTime;
     private float _currentCooldown;
-
+    private int _layerTarget;
+    private int _layerColls;
 
     private Vector3 _lastPosition;
     private Vector3 _direction;
-
-
+    private bool targetInArray;
     private bool canMove = true;
+    private bool _inhabilited;
 
     private void Awake()
     {
         _enemyModel = GetComponent<EnemyModel>();
-
+        _layerTarget = LayerMask.NameToLayer("Player");
+        _layerColls = 1 << LayerMask.NameToLayer("Enemy") | 1 << LayerMask.NameToLayer("Player"); 
         SetCooldown();
 
     }
 
     public override void CustomUpdate()
     {
-        CheckCollisionEntity();
-        CheckStuckFrames();
+        if (!_inhabilited)
+        {
+            HandleDeathCollision();
+        }
         if (gameObject.activeSelf)
         {
+            CheckStuckFrames();
+            CheckCollisionEntity();
             TimerToShoot();
-            MoveEntity();    
+            MoveEntity();
         }
     }
 
@@ -52,26 +58,52 @@ public class EnemyController : Updateable
     }
 
     public void CheckCollisionEntity()
-    {      
-        bool collisionDetected = _enemyModel.CollisionNonAlloc(_radius, gameObject.layer,1);
-
-        if (collisionDetected)
+    {
+        bool hasCollider = _enemyModel.CollisionNonAlloc(_radius, _layerColls, 1);
+      
+        if (hasCollider && canMove)
         {
+            targetInArray = _enemyModel.Colls[1].gameObject.layer == _layerTarget; ///LAZY COMPUTATION
             canMove = false;
         }
+
     }
+    /// <LazyComputation>
+    /// Aplicamos el lazy computation porque se retrasa o posterga el calculo costoso del bucle foreach
+    /// <LazyComputation>
+    public void HandleDeathCollision()
+    {
+        if (targetInArray) 
+        {
+            foreach (var item in _enemyModel.Colls) ///LAZY COMPUTATION
+            {
+                if (item != null)
+                {
+                    if (item.gameObject.layer == _layerTarget)
+                    {
+                        _enemyModel.Die();
+                        _inhabilited = true;
+                    }
+                }
+
+            }
+        }
+ 
+    }
+
     public void CheckStuckFrames()
     {
-        if ((transform.position - _lastPosition).magnitude < 0.1f)
+        if ((transform.position - _lastPosition).magnitude <= 0.2f)
         {
             // Incrementamos el contador de tiempo
             _stuckTime += Time.deltaTime;
+           
 
             // Si excede el límite de tiempo, cambiamos la dirección
             if (_stuckTime >= _maxStuckTime)
             {
-                _direction = GetRandomDir();
                 canMove = true;
+                _direction = GetRandomDir();
                 _stuckTime = 0f;
             }
         }
@@ -123,6 +155,7 @@ public class EnemyController : Updateable
     {
         //StartCoroutine(_enemyModel.NotCollisionEntity(_myLayer));
         GameManager.Instance?.CheckIfPoolNotEmpty();
+        _inhabilited = false;
         _direction = transform.forward;
         SetCooldown();
 

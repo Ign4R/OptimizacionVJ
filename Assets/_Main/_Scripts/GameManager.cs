@@ -9,6 +9,7 @@ public class GameManager : Updateable
     [SerializeField] private int _enemiesInPool = 100;
 
     [SerializeField] private Transform _positionSpawn;
+    [SerializeField] private Transform _parentBullets;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject _bullet;
@@ -21,6 +22,7 @@ public class GameManager : Updateable
     public static GameManager Instance { get; private set; }
     public static int EntityCount { get ; private set ; }
     public static int MaxGoals { get ; private set; }
+
 
     private void Awake()
     {
@@ -35,6 +37,7 @@ public class GameManager : Updateable
             MaxGoals = _maxGoals;
             CanRunSpawn = true;
             _currentTime = _waitTimeToSpawn;
+
         }
     }
     public override void CustomUpdate()
@@ -43,19 +46,16 @@ public class GameManager : Updateable
     }
     public void InitializationPool()
     {
-        FactoryObject bulletFactory = CreateFactory("Bullets", _bullet);
-        FactoryObject enemyFactory = CreateFactory("Enemies", _enemy);
+        FactoryObject bulletFactory = CreateFactory(_parentBullets, _bullet);
+        FactoryObject enemyFactory = CreateFactory(_positionSpawn, _enemy);
         BulletPool = CreatePool(bulletFactory, _bulletsInPool);
         EnemyPool = CreatePool(enemyFactory, _enemiesInPool);
     }
-    public static FactoryObject CreateFactory(string nameParent, GameObject prefab)
+    public static FactoryObject CreateFactory(Transform parent, GameObject prefab)
     {
-        GameObject parentBullets = new GameObject(nameParent);
-        FactoryObject bulletFactory = new FactoryObject(prefab, parentBullets.transform);
-
+        FactoryObject bulletFactory = new FactoryObject(prefab, parent);
         return bulletFactory;
     }
-
     public static ObjectPool CreatePool(FactoryObject factoryObject, int countObj)
     {
         var pool = new ObjectPool(factoryObject);

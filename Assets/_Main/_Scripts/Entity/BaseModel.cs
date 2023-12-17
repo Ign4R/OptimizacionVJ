@@ -6,13 +6,14 @@ using UnityEngine;
 /// en el Stack. Por ej: las funciones de Movimiento y Disparo.
 /// <Stack>
 [RequireComponent(typeof(Rigidbody))]
-public class BaseModel : Updateable
+public class BaseModel : Updateable  ///Especializacion
 {
     [SerializeField]
     private float _speed;
     [SerializeField]
     protected Transform _origin;
 
+    private int _layIgnoreEntity;
     protected int _bulletType;
     protected bool _destroyed;
 
@@ -20,14 +21,12 @@ public class BaseModel : Updateable
 
     public float Speed { get => _speed; private set => _speed = value; }
 
-    private int _layIgnoreEntity;
 
     public Rigidbody Rb { get ; private set ; }
     public Collider[] Colls { get => _colls; set => _colls = value; }
 
     public virtual void Awake()
     {
-
         _layIgnoreEntity = LayerMask.NameToLayer("IgnoreEntity");
         Rb = GetComponent<Rigidbody>();
     }
@@ -39,27 +38,24 @@ public class BaseModel : Updateable
         Rb.velocity = dirSpeed;
         Rb.rotation = Quaternion.LookRotation(rotDir);
     }
-    public bool CollisionNonAlloc(float radius, int layerTarget, int count = 0)
+    public bool CollisionNonAlloc(float radius, int layerMask, int count = 0)
     {
-        bool hitCount = Physics.OverlapSphereNonAlloc(transform.position, radius, _colls, 1 << layerTarget) > count;    
-        return hitCount;
+        return Physics.OverlapSphereNonAlloc(transform.position, radius, _colls, layerMask) > count;
     }
     public virtual void GetDir(Vector3 dir)
     {
         transform.rotation = Quaternion.LookRotation(dir.normalized);
     }
-
     public void Shoot(ObjectPool objectPool)
     {
         var bullet = objectPool.GetPooledObject();
-        bullet.transform.SetPositionAndRotation(_origin.position, _origin.rotation);
         bullet.gameObject.layer = _bulletType;
+        bullet.transform.SetPositionAndRotation(_origin.position, _origin.rotation);
     }
-    public IEnumerator NotCollisionEntity(int layer)
+    public IEnumerator RespawnImmunity(Vector3 position, float waitForSeconds)
     {
-        gameObject.layer = _layIgnoreEntity; //layer que no detecta collision con alguna entidad
-        yield return new WaitForSeconds(1f); // Ajusta el tiempo según sea necesario
-        gameObject.layer = layer;
+        yield return new WaitForSeconds(waitForSeconds); // Ajusta el tiempo según sea necesario
+        transform.position = position;
 
     }
 }

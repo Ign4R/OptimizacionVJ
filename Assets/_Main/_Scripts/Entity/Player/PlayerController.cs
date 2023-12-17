@@ -4,26 +4,22 @@ using UnityEngine;
 public class PlayerController : Updateable
 {
     private PlayerModel _playerModel;
-
-    private Vector3 _posSpawn;
-    private LayerMask _layerColl;
-    private int _layerEnemy;
+    private int _layColls;
     private int _layerBulletE;
 
     [SerializeField]
     private GameObject _bullet;
     [SerializeField]
     private float _radius;
-
+    private bool _inhabilited;
 
     public GameObject Bullet { get => _bullet; }
 
     private void Awake()
     {    
         _playerModel = GetComponent<PlayerModel>();
-        _layerEnemy = LayerMask.NameToLayer("Enemy");
-        _layerBulletE = LayerMask.NameToLayer("BulletEnemy");
-
+        _layColls = 1 << LayerMask.NameToLayer("Enemy") | (1 << LayerMask.NameToLayer("BulletEnemy"));
+        ///Caching :D
 
     }
     public override void Start()
@@ -34,8 +30,10 @@ public class PlayerController : Updateable
     }
     public override void CustomUpdate()
     {
-        CheckCollisionDie();
-
+        if (!_inhabilited)
+        {
+            HandleDeathCollision();
+        }
         var dir = GetInputDir();
     
         if (dir != Vector3.zero)
@@ -67,20 +65,23 @@ public class PlayerController : Updateable
         return inputDir.normalized;
     }
   
-    public void CheckCollisionDie()
+    public void HandleDeathCollision()
     {
-        bool hasCollision = _playerModel.CollisionNonAlloc(_radius,_layerEnemy);
-        if (hasCollision)
+        bool hasCollision = _playerModel.CollisionNonAlloc(_radius, _layColls);
+        if (hasCollision && !_inhabilited)
         {
-            _playerModel.Colls[0].GetComponent<IDestroyable>().Die();
             Respawn();
+            _inhabilited = true;
         }
     }
     public void Respawn()
     {
         _playerModel.Die();
     }
-
+    private void OnEnable()
+    {
+        _inhabilited = false;
+    }
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.black;
