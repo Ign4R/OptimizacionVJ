@@ -55,7 +55,7 @@ public class Bullet : Updateable
     public void ReturnBullet()
     {
         _currentTime = 0;
-        GameManager.Instance.BulletPool.ReturnToPool(gameObject);
+        GameManager.BulletPool.ReturnToPool(gameObject);
     }
   
 

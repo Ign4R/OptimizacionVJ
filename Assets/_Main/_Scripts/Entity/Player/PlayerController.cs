@@ -44,7 +44,7 @@ public class PlayerController : Updateable
         }
         if(Input.GetMouseButtonDown(0))
         {
-            var objPool = GameManager.Instance.BulletPool;
+            var objPool = GameManager.BulletPool;
             _playerModel.Shoot(objPool);
         }
     }

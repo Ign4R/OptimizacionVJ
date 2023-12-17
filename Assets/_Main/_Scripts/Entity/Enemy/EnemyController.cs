@@ -13,12 +13,8 @@ public class EnemyController : Updateable
 
 
     private EnemyModel _enemyModel;
-    private Collider[] _colls = new Collider[5];
-
 
     private float _stuckTime;
-    private int _myLayer;
-    private int _layerTarget;
     private float _currentCooldown;
 
 
@@ -30,8 +26,6 @@ public class EnemyController : Updateable
 
     private void Awake()
     {
-        _myLayer = LayerMask.NameToLayer("Enemy");
-        _layerTarget = LayerMask.NameToLayer("Player");
         _enemyModel = GetComponent<EnemyModel>();
 
         SetCooldown();
@@ -56,9 +50,10 @@ public class EnemyController : Updateable
             _enemyModel.MoveAndRotate(transform.forward, _direction);
         }
     }
+
     public void CheckCollisionEntity()
-    {
-        bool collisionDetected = _enemyModel.CollisionNonAlloc(_radius, _layerTarget);
+    {      
+        bool collisionDetected = _enemyModel.CollisionNonAlloc(_radius, gameObject.layer,1);
 
         if (collisionDetected)
         {
@@ -95,7 +90,7 @@ public class EnemyController : Updateable
         _currentCooldown -= Time.deltaTime;
         if (_currentCooldown < 1)
         {
-            var bulletPool = GameManager.Instance.BulletPool;
+            var bulletPool = GameManager.BulletPool;
             _enemyModel.Shoot(bulletPool);
             _currentCooldown = _cooldown;
         }
@@ -126,8 +121,8 @@ public class EnemyController : Updateable
 
     private void OnEnable()
     {
-        GameManager.Instance?.CheckCountInPool();
         //StartCoroutine(_enemyModel.NotCollisionEntity(_myLayer));
+        GameManager.Instance?.CheckIfPoolNotEmpty();
         _direction = transform.forward;
         SetCooldown();
 

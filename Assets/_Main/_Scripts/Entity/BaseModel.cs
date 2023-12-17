@@ -1,6 +1,10 @@
 using System.Collections;
 using UnityEngine;
 
+/// <Stack>
+/// Al utilizar un enfoque modular para cada enemigo, reducimos las llamadas a funciones
+/// en el Stack. Por ej: las funciones de Movimiento y Disparo.
+/// <Stack>
 [RequireComponent(typeof(Rigidbody))]
 public class BaseModel : Updateable
 {
@@ -12,8 +16,7 @@ public class BaseModel : Updateable
     protected int _bulletType;
     protected bool _destroyed;
 
-    private Collider[] _colls = new Collider[3];
-
+    private static Collider[] _colls = new Collider[3];
 
     public float Speed { get => _speed; private set => _speed = value; }
 
@@ -36,9 +39,9 @@ public class BaseModel : Updateable
         Rb.velocity = dirSpeed;
         Rb.rotation = Quaternion.LookRotation(rotDir);
     }
-    public bool CollisionNonAlloc(float radius, int layerTarget)
+    public bool CollisionNonAlloc(float radius, int layerTarget, int count = 0)
     {
-        bool hitCount = Physics.OverlapSphereNonAlloc(transform.position, radius, _colls, 1 << layerTarget) > 0;    
+        bool hitCount = Physics.OverlapSphereNonAlloc(transform.position, radius, _colls, 1 << layerTarget) > count;    
         return hitCount;
     }
     public virtual void GetDir(Vector3 dir)

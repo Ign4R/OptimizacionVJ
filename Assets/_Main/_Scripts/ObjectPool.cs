@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+/// <Heap>
+/// Utilize un ObjectPool para gestionar la reutilizacion de objetos en el juego
+/// para no crear y destruir objetos constantemente como las balas o los tanques. 
+/// Evitando asi operaciones costosas en la memoria dinamica
+/// <Heap>
 public class ObjectPool
 {
     private FactoryObject _factoryObj;
-    private  Queue<GameObject> _pooledObjects = new Queue<GameObject>();
-
-    public Queue<GameObject> PooledObjects { get => _pooledObjects; }
+    private Queue<GameObject> _pooledObjects = new Queue<GameObject>();
 
     public ObjectPool(FactoryObject factoryObj)
     {
@@ -42,5 +45,11 @@ public class ObjectPool
     {
         poolObject.gameObject.SetActive(false);
         _pooledObjects.Enqueue(poolObject);
+
+    }
+
+    public int GetCountPool()
+    {
+        return _pooledObjects.Count;
     }
 }

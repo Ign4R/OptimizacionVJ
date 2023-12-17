@@ -3,8 +3,7 @@
 public class GameManager : Updateable
 {  
     private float _currentTime;
-    private int _entityCount;
-    [SerializeField] private int _maxEntities;
+    [SerializeField] private int _maxGoals;
     [SerializeField] float _waitTimeToSpawn = 5f;
     [SerializeField] private int _bulletsInPool = 10;
     [SerializeField] private int _enemiesInPool = 100;
@@ -16,12 +15,12 @@ public class GameManager : Updateable
     [SerializeField] private GameObject _enemy;
 
 
-
-
     public bool CanRunSpawn { get; private set; }
-    public ObjectPool BulletPool { get ; private set ; }
-    public ObjectPool EnemyPool { get ; private set ; }
+    public static ObjectPool BulletPool { get ; private set ; }
+    public static ObjectPool EnemyPool { get ; private set ; }
     public static GameManager Instance { get; private set; }
+    public static int EntityCount { get ; private set ; }
+    public static int MaxGoals { get ; private set; }
 
     private void Awake()
     {
@@ -31,21 +30,25 @@ public class GameManager : Updateable
         }
         else
         {
+            InitializationPool();
             Instance = this;
-            FactoryObject bulletFactory = GetFactory("Bullets",_bullet);
-            FactoryObject enemyFactory = GetFactory("Enemies", _enemy);
-            BulletPool = GetPool(bulletFactory, _bulletsInPool);
-            EnemyPool = GetPool(enemyFactory, _enemiesInPool);         
+            MaxGoals = _maxGoals;
             CanRunSpawn = true;
             _currentTime = _waitTimeToSpawn;
         }
     }
     public override void CustomUpdate()
-    {
-   
+    { 
         TimerToSpawn();
     }
-    public FactoryObject GetFactory(string nameParent, GameObject prefab)
+    public void InitializationPool()
+    {
+        FactoryObject bulletFactory = CreateFactory("Bullets", _bullet);
+        FactoryObject enemyFactory = CreateFactory("Enemies", _enemy);
+        BulletPool = CreatePool(bulletFactory, _bulletsInPool);
+        EnemyPool = CreatePool(enemyFactory, _enemiesInPool);
+    }
+    public static FactoryObject CreateFactory(string nameParent, GameObject prefab)
     {
         GameObject parentBullets = new GameObject(nameParent);
         FactoryObject bulletFactory = new FactoryObject(prefab, parentBullets.transform);
@@ -53,27 +56,20 @@ public class GameManager : Updateable
         return bulletFactory;
     }
 
-    public ObjectPool GetPool(FactoryObject factoryObject, int countObj)
+    public static ObjectPool CreatePool(FactoryObject factoryObject, int countObj)
     {
         var pool = new ObjectPool(factoryObject);
         pool.Initialization(countObj);
         return pool;
     }
-    public void CounterEntity()
+    public static void CounterEntity()
     {
-        _entityCount++;
-        if (_entityCount < _maxEntities)
-        {
-            CheckCountInPool();
-        }
-        else
+        EntityCount++;
+        if (EntityCount >= MaxGoals)
         {
             //TODO: Pop.Up GameOver Screen
-        }
-           
+        }           
     }
-
-
     public void TimerToSpawn()
     {      
         if (CanRunSpawn)
@@ -88,17 +84,10 @@ public class GameManager : Updateable
         }
     }
 
-    public void CheckCountInPool()
+    public void CheckIfPoolNotEmpty()
     {
-        if (EnemyPool?.PooledObjects.Count >= 1) 
-        {
-            CanRunSpawn = true;
-        }
-        else 
-        {
-            CanRunSpawn = false;
-        }
-      
+        int countPool = EnemyPool.GetCountPool();
+        CanRunSpawn = countPool > 0;
     }
 }
 
