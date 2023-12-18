@@ -67,7 +67,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cooldown: 4
   _maxStuckTime: 0.3
-  _radius: 4
 --- !u!114 &6388716524334034208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -82,6 +81,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 14
   _origin: {fileID: 5849175849890798409}
+  _radius: 4
 --- !u!135 &5899480511629775193
 SphereCollider:
   m_ObjectHideFlags: 0

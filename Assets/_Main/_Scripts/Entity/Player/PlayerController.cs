@@ -1,34 +1,21 @@
-using System;
-using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 public class PlayerController : Updateable
 {
     [SerializeField]
     private GameObject _bullet;
-    [SerializeField]
-    private float _radius;
-
     private PlayerModel _playerModel;
-    private int _layColls;
-    private int _layerBulletE;
     private bool _inhabilited;
-    private Collider[] _colls = new Collider[4];
 
     public GameObject Bullet { get => _bullet; }
 
     private void Awake()
     {      
         _playerModel = GetComponent<PlayerModel>();
-        _layColls = 1 << LayerMask.NameToLayer("Enemy") | (1 << LayerMask.NameToLayer("BulletEnemy"));
-        ///Caching :D
-
     }
     public override void Start()
     {
         base.Start();      
-        _playerModel.SetPosSpawn(transform.position);
-      
+        _playerModel.SetPosSpawn(transform.position);    
     }
     public override void CustomUpdate()
     {
@@ -76,20 +63,14 @@ public class PlayerController : Updateable
         Vector3 inputDir = new Vector3(h, 0, v);
         return inputDir.normalized;
     }
-  
+
     public void HandleDeathCollision()
     {     
-        bool hasCollision = _playerModel.CollisionNonAlloc(_radius, _layColls);
+        bool hasCollision = _playerModel.DetectCollision();
         if (hasCollision)
         {
             _inhabilited = true;
         }
     }
 
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.black;
-        Gizmos.DrawWireSphere(transform.position, _radius);
-    }
 }

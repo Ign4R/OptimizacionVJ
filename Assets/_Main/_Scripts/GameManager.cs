@@ -35,7 +35,7 @@ public class GameManager : Updateable
             InitializationPool();
             Instance = this;
             MaxGoals = _maxGoals;
-            CanRunSpawn = true;
+            CanRunSpawn = false;
             _currentTime = _waitTimeToSpawn;
 
         }
