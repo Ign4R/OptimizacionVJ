@@ -1,22 +1,24 @@
+using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 public class PlayerController : Updateable
 {
-    private PlayerModel _playerModel;
-    private int _layColls;
-    private int _layerBulletE;
-
     [SerializeField]
     private GameObject _bullet;
     [SerializeField]
     private float _radius;
+
+    private PlayerModel _playerModel;
+    private int _layColls;
+    private int _layerBulletE;
     private bool _inhabilited;
+    private Collider[] _colls = new Collider[4];
 
     public GameObject Bullet { get => _bullet; }
 
     private void Awake()
-    {    
+    {      
         _playerModel = GetComponent<PlayerModel>();
         _layColls = 1 << LayerMask.NameToLayer("Enemy") | (1 << LayerMask.NameToLayer("BulletEnemy"));
         ///Caching :D
@@ -24,16 +26,21 @@ public class PlayerController : Updateable
     }
     public override void Start()
     {
-        base.Start();
+        base.Start();      
         _playerModel.SetPosSpawn(transform.position);
       
     }
     public override void CustomUpdate()
     {
-        if (!_inhabilited)
+        if(!_inhabilited)
         {
             HandleDeathCollision();
         }
+        else
+        {
+            Respawn();
+        }
+
         var dir = GetInputDir();
     
         if (dir != Vector3.zero)
@@ -45,6 +52,11 @@ public class PlayerController : Updateable
             var objPool = GameManager.BulletPool;
             _playerModel.Shoot(objPool);
         }
+    }
+    public void Respawn()
+    {
+        _playerModel.Die();
+        _inhabilited = false;
     }
     public Vector3 GetInputDir()
     {
@@ -66,22 +78,15 @@ public class PlayerController : Updateable
     }
   
     public void HandleDeathCollision()
-    {
+    {     
         bool hasCollision = _playerModel.CollisionNonAlloc(_radius, _layColls);
-        if (hasCollision && !_inhabilited)
+        if (hasCollision)
         {
-            Respawn();
             _inhabilited = true;
         }
     }
-    public void Respawn()
-    {
-        _playerModel.Die();
-    }
-    private void OnEnable()
-    {
-        _inhabilited = false;
-    }
+
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.black;

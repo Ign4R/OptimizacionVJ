@@ -6,16 +6,16 @@ using UnityEngine;
 /// en el Stack. Por ej: las funciones de Movimiento y Disparo.
 /// <Stack>
 [RequireComponent(typeof(Rigidbody))]
-public class BaseModel : Updateable  ///Especializacion
+public class BaseModel : Updateable  ///Especializacion derivando 
 {
+    
     [SerializeField]
     private float _speed;
     [SerializeField]
     protected Transform _origin;
 
-    private int _layIgnoreEntity;
+
     protected int _bulletType;
-    protected bool _destroyed;
 
     private static Collider[] _colls = new Collider[3];
 
@@ -24,10 +24,10 @@ public class BaseModel : Updateable  ///Especializacion
 
     public Rigidbody Rb { get ; private set ; }
     public Collider[] Colls { get => _colls; set => _colls = value; }
+    public bool Destroyed { get ; protected set ; }
 
     public virtual void Awake()
     {
-        _layIgnoreEntity = LayerMask.NameToLayer("IgnoreEntity");
         Rb = GetComponent<Rigidbody>();
     }
     public void MoveAndRotate(Vector3 dir, Vector3 rotDir)
@@ -46,16 +46,23 @@ public class BaseModel : Updateable  ///Especializacion
     {
         transform.rotation = Quaternion.LookRotation(dir.normalized);
     }
-    public void Shoot(ObjectPool objectPool)
+
+    ///<Especializacion>
+    /// Especializacion se especializa un comportamiento generico mientras que 
+    /// cada clase le da un tipo de bala especifica o layer para influir en el juego
+    /// solamente usando una funcion generica sin la necesidad de crear dos tipos de bala
+    /// <Especializacion>
+    public void Shoot(ObjectPool objectPool) 
     {
         var bullet = objectPool.GetPooledObject();
         bullet.gameObject.layer = _bulletType;
         bullet.transform.SetPositionAndRotation(_origin.position, _origin.rotation);
     }
-    public IEnumerator RespawnImmunity(Vector3 position, float waitForSeconds)
+    public IEnumerator RespawnImmunity(float waitForSeconds)
     {
         yield return new WaitForSeconds(waitForSeconds); // Ajusta el tiempo según sea necesario
-        transform.position = position;
+        gameObject.SetActive(false);
+
 
     }
 }

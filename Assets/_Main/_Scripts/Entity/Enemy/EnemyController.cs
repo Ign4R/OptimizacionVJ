@@ -10,8 +10,6 @@ public class EnemyController : Updateable
     [SerializeField] private float _maxStuckTime = 0.5f;
     [SerializeField] private float _radius = 4;
    
-
-
     private EnemyModel _enemyModel;
 
     private float _stuckTime;
@@ -21,9 +19,10 @@ public class EnemyController : Updateable
 
     private Vector3 _lastPosition;
     private Vector3 _direction;
-    private bool targetInArray;
+    private bool targetCached;
     private bool canMove = true;
     private bool _inhabilited;
+    private Collider[] _colls = new Collider[4];
 
     private void Awake()
     {
@@ -38,17 +37,28 @@ public class EnemyController : Updateable
     {
         if (!_inhabilited)
         {
+            CheckCollisionEntity();
             HandleDeathCollision();
         }
-        if (gameObject.activeSelf)
+
+        else
         {
+            Recycle();
+        }
+
+        if (gameObject.activeSelf)
+        {           
             CheckStuckFrames();
-            CheckCollisionEntity();
             TimerToShoot();
             MoveEntity();
         }
     }
-
+    public void Recycle()
+    {
+        Debug.LogWarning("DieEnemy");
+        _enemyModel.Die();
+        _inhabilited = false;
+    }
     public void MoveEntity()
     {
         if (canMove)
@@ -59,50 +69,47 @@ public class EnemyController : Updateable
 
     public void CheckCollisionEntity()
     {
-        bool hasCollider = _enemyModel.CollisionNonAlloc(_radius, _layerColls, 1);
-      
-        if (hasCollider && canMove)
-        {
-            targetInArray = _enemyModel.Colls[1].gameObject.layer == _layerTarget; ///LAZY COMPUTATION
+        bool hasCollision = _enemyModel.CollisionNonAlloc(_radius, _layerColls, 1);
+        if (hasCollision && canMove) 
+        {       
+            targetCached = _enemyModel.Colls[0].gameObject.layer == _layerTarget;  ///LAZY COMPUTATION ///CACHING
             canMove = false;
         }
 
     }
     /// <LazyComputation>
-    /// Aplicamos el lazy computation porque se retrasa o posterga el calculo costoso del bucle foreach
+    /// Aplicamos el lazy computation al retrasar o postergar el calculo costoso del bucle foreach
     /// <LazyComputation>
     public void HandleDeathCollision()
     {
-        if (targetInArray) 
-        {
-            foreach (var item in _enemyModel.Colls) ///LAZY COMPUTATION
+        if (targetCached) ///LAZY COMPUTATION
+        {       
+            foreach (var item in _enemyModel.Colls)
             {
                 if (item != null)
                 {
                     if (item.gameObject.layer == _layerTarget)
                     {
-                        _enemyModel.Die();
+                        targetCached = false;
                         _inhabilited = true;
                     }
                 }
-
             }
         }
  
     }
-
     public void CheckStuckFrames()
     {
         if ((transform.position - _lastPosition).magnitude <= 0.2f)
         {
             // Incrementamos el contador de tiempo
+
             _stuckTime += Time.deltaTime;
-           
+            canMove = true;
 
             // Si excede el límite de tiempo, cambiamos la dirección
             if (_stuckTime >= _maxStuckTime)
-            {
-                canMove = true;
+            {            
                 _direction = GetRandomDir();
                 _stuckTime = 0f;
             }
@@ -127,7 +134,6 @@ public class EnemyController : Updateable
             _currentCooldown = _cooldown;
         }
     }
-
     public Vector3 GetRandomDir()
     {
         int randomInt = Random.Range(0, 4);
@@ -146,16 +152,15 @@ public class EnemyController : Updateable
         }
 
     }
+
     public void SetCooldown()
     {
         _currentCooldown = _cooldown;
     }
 
     private void OnEnable()
-    {
-        //StartCoroutine(_enemyModel.NotCollisionEntity(_myLayer));
+    {     
         GameManager.Instance?.CheckIfPoolNotEmpty();
-        _inhabilited = false;
         _direction = transform.forward;
         SetCooldown();
 

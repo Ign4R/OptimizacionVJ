@@ -18,7 +18,7 @@ public class GameManager : Updateable
 
     public bool CanRunSpawn { get; private set; }
     public static ObjectPool BulletPool { get ; private set ; }
-    public static ObjectPool EnemyPool { get ; private set ; }
+    public  ObjectPool EnemyPool { get ; private set ; }
     public static GameManager Instance { get; private set; }
     public static int EntityCount { get ; private set ; }
     public static int MaxGoals { get ; private set; }
@@ -41,7 +41,7 @@ public class GameManager : Updateable
         }
     }
     public override void CustomUpdate()
-    { 
+    {
         TimerToSpawn();
     }
     public void InitializationPool()
@@ -77,6 +77,7 @@ public class GameManager : Updateable
             _currentTime += Time.deltaTime;
             if (_currentTime >= _waitTimeToSpawn)
             {
+               
                 _currentTime = 0;
                 var enemy = EnemyPool.GetPooledObject();
                 enemy.transform.position = _positionSpawn.position;
@@ -84,9 +85,10 @@ public class GameManager : Updateable
         }
     }
 
+
     public void CheckIfPoolNotEmpty()
     {
-        int countPool = EnemyPool.GetCountPool();
+        int countPool = EnemyPool.GetCountPool();  
         CanRunSpawn = countPool > 0;
     }
 }

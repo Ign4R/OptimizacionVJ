@@ -12,9 +12,9 @@ public class EnemyModel : BaseModel, IDestroyable
 
     public void Die()
     {
-        print("Die Enemy");
-        GameManager.EnemyPool.ReturnToPool(gameObject);
+        Debug.LogError("DieEnemy");
+        GameManager.Instance.EnemyPool.ReturnToPool(gameObject);
+        GameManager.Instance.CheckIfPoolNotEmpty();
         GameManager.CounterEntity();
-        GameManager.Instance?.CheckIfPoolNotEmpty();
     }
 }
