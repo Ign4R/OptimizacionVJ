@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-using UnityEngine;
-
+﻿using UnityEngine;
 public class OnCollisionNonAloc
 {
     public float Radius { get; private set; }
@@ -9,7 +7,7 @@ public class OnCollisionNonAloc
 
     public OnCollisionNonAloc(float radius, Collider[] colls)
     {
-        Radius = radius;
+        Radius = radius; 
         Colls = colls;
     }
     public bool Sphere(Vector3 pos, int? layColls = null, int contacs = 0)

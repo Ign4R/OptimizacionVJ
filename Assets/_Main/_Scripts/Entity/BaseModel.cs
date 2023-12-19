@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-
 /// <Stack>
 /// Al utilizar un enfoque modular para cada enemigo, reducimos las llamadas a funciones
 /// en el Stack. Por ej: las funciones de Movimiento y Disparo.
@@ -15,7 +14,6 @@ public class BaseModel : Updateable  ///Especializacion derivando
     [SerializeField]
     protected float _radius;
 
-    protected int _bulletType;
     protected int _layColls;
 
     private static Collider[] _colls = new Collider[3];
@@ -51,17 +49,11 @@ public class BaseModel : Updateable  ///Especializacion derivando
     /// cada clase le da un tipo de bala especifica o layer para influir en el juego
     /// solamente usando una funcion generica sin la necesidad de crear dos tipos de bala
     /// <Especializacion>
-    public void Shoot(ObjectPool objectPool) 
+    public void Shoot(ObjectPool<Updateable> objectPool, int layerTarget) 
     {
-        var bullet = objectPool.GetPooledObject();
-        bullet.gameObject.layer = _bulletType;
+        Bullet bullet = (Bullet)objectPool.GetPooledObject();
+        bullet.SetTarget(layerTarget);
         bullet.transform.SetPositionAndRotation(_origin.position, _origin.rotation);
     }
-    public IEnumerator RespawnImmunity(float waitForSeconds)
-    {
-        yield return new WaitForSeconds(waitForSeconds); // Ajusta el tiempo según sea necesario
-        gameObject.SetActive(false);
 
-
-    }
 }

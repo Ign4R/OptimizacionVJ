@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-public interface IDestroyable 
+﻿public interface IDestroyable 
 {
     void Die();
 }

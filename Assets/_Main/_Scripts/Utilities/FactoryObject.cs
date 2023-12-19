@@ -1,16 +1,14 @@
 ﻿using UnityEngine;
-public class FactoryObject
+public class FactoryObject<T> where T: MonoBehaviour
 {
-    private GameObject _instance;
+    private T _instance;
     private Transform _parent;
-
-    public FactoryObject(GameObject instance, Transform parent)
+    public FactoryObject(T instance, Transform parent)
     {
         _instance = instance;
         _parent = parent;
-
     }
-    public GameObject CreateObj()
+    public T CreateObj()
     {
         return Object.Instantiate(_instance, _parent);
     }

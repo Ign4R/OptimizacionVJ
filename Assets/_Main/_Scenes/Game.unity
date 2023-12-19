@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.18331961, g: 0.2289449, b: 0.3062359, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3432,7 +3432,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &851285979
 Transform:
   m_ObjectHideFlags: 0
@@ -4497,8 +4497,8 @@ MonoBehaviour:
   _enemiesInPool: 5
   _positionSpawn: {fileID: 1029667632}
   _parentBullets: {fileID: 2066611853}
-  _bullet: {fileID: 388889151532357120, guid: b8d242c7d45231442a3b9f229f601e7f, type: 3}
-  _enemy: {fileID: 3367942137253536460, guid: 90e51483ba347b44ebc8dc4d2debe90d, type: 3}
+  _bullet: {fileID: 388889151532357125, guid: b8d242c7d45231442a3b9f229f601e7f, type: 3}
+  _enemy: {fileID: 6388716524334034209, guid: 90e51483ba347b44ebc8dc4d2debe90d, type: 3}
 --- !u!1 &1211293908
 GameObject:
   m_ObjectHideFlags: 0

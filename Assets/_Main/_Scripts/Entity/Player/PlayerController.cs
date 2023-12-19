@@ -1,16 +1,14 @@
 using UnityEngine;
 public class PlayerController : Updateable
 {
-    [SerializeField]
-    private GameObject _bullet;
     private PlayerModel _playerModel;
+    private int _layTarget;
     private bool _inhabilited;
-
-    public GameObject Bullet { get => _bullet; }
 
     private void Awake()
     {      
         _playerModel = GetComponent<PlayerModel>();
+        _layTarget = LayerMask.NameToLayer("Enemy");
     }
     public override void Start()
     {
@@ -29,15 +27,15 @@ public class PlayerController : Updateable
         }
 
         var dir = GetInputDir();
-    
-        if (dir != Vector3.zero)
+
+        if (dir.magnitude != 0) 
         {
             _playerModel.MoveAndRotate(dir,dir);
         }
         if(Input.GetMouseButtonDown(0))
         {
             var objPool = GameManager.BulletPool;
-            _playerModel.Shoot(objPool);
+            _playerModel.Shoot(objPool,_layTarget);
         }
     }
     public void Respawn()

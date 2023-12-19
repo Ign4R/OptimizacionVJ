@@ -6,12 +6,12 @@ using UnityEngine;
 /// para no crear y destruir objetos constantemente como las balas o los tanques. 
 /// Evitando asi operaciones costosas en la memoria dinamica
 /// <Heap>
-public class ObjectPool
+public class ObjectPool<T> where T : MonoBehaviour
 {
-    private FactoryObject _factoryObj;
-    private Queue<GameObject> _pooledObjects = new Queue<GameObject>();
+    private FactoryObject<T> _factoryObj;
+    private Queue<T> _pooledObjects = new Queue<T>();
 
-    public ObjectPool(FactoryObject factoryObj)
+    public ObjectPool(FactoryObject<T> factoryObj)
     {
         _factoryObj = factoryObj; 
     }
@@ -22,17 +22,17 @@ public class ObjectPool
             var obj = _factoryObj.CreateObj();
 
             obj.gameObject.name = obj.gameObject.name + i;
-            obj.SetActive(false);
-            _pooledObjects.Enqueue(obj.gameObject); /// se utiliza para agregar un elemento al final de la cola
+            obj.gameObject.SetActive(false);
+            _pooledObjects.Enqueue(obj); /// se utiliza para agregar un elemento al final de la cola
         }
     }
-    public GameObject GetPooledObject()
+    public T GetPooledObject()
     {
-        GameObject poolObject;
+        T poolObject;
         if (_pooledObjects.Count > 0)
         {
             poolObject = _pooledObjects.Dequeue();
-            poolObject.SetActive(true);
+            poolObject.gameObject.SetActive(true);
             return poolObject;
         }
         else ///en caso de necesitar un objeto mas porque utilizaste todos, instancia uno
@@ -43,7 +43,7 @@ public class ObjectPool
         }
 
     }
-    public void ReturnToPool(GameObject poolObject) /// esta funcion se usa para devolver al pool el obj (es cuando ya no necesita ser usado)
+    public void ReturnToPool(T poolObject) /// esta funcion se usa para devolver al pool el obj (es cuando ya no necesita ser usado)
     {
         poolObject.gameObject.SetActive(false);
         _pooledObjects.Enqueue(poolObject);

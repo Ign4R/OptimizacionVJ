@@ -1,14 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 public class EnemyModel : BaseModel, IDestroyable
 {
     public override void Awake()
     {
         base.Awake();
         _layColls = 1 << LayerMask.NameToLayer("Enemy") | (1 << LayerMask.NameToLayer("Player"));
-        _bulletType = LayerMask.NameToLayer("BulletEnemy");
     }
     public Vector3 GetRandomDir()
     {
@@ -29,13 +25,12 @@ public class EnemyModel : BaseModel, IDestroyable
     }
     public void Die()
     {
-        Debug.Log("Die Enemy");
-        GameManager.Instance.EnemyPool.ReturnToPool(gameObject);
+        GameManager.Instance.EnemyPool.ReturnToPool(this);
         GameManager.Instance.CheckIfPoolNotEmpty();
         GameManager.CounterEntity();
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, _radius);

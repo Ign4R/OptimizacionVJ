@@ -1,24 +1,15 @@
-using System;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
-
 public class PlayerModel : BaseModel, IDestroyable
 {
     private Vector3 _posSpawn;
-
-
     public override void Awake()
     {
         base.Awake();
-        _layColls = 1 << LayerMask.NameToLayer("Enemy");
-        ///Caching :D
-        _bulletType = LayerMask.NameToLayer("BulletPlayer");
+        _layColls = 1 << LayerMask.NameToLayer("Enemy"); ///Caching :D
     }
     public void Die()
     {
-        Debug.Log("Die Player");
-        transform.position = _posSpawn;
-     
+        transform.position = _posSpawn;    
     }
   
     public void SetPosSpawn(Vector3 pos)
@@ -26,7 +17,7 @@ public class PlayerModel : BaseModel, IDestroyable
         _posSpawn = pos;
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.black;
         Gizmos.DrawWireSphere(transform.position, _radius);

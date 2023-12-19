@@ -1,20 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.ProBuilder.MeshOperations;
-
 public class EnemyController : Updateable
 {
-    [SerializeField] private float _cooldown = 10;
+    [SerializeField] private float _cooldownShoot = 4;
     [SerializeField] private float _maxStuckTime = 0.5f;
    
     private EnemyModel _enemyModel;
 
     private float _stuckTime;
-    private float _currentCooldown;
+    private float _currTimeShoot;
     private int _layerTarget;
-    private bool targetCached;
+    private bool _targetCached;
     private bool canMove = true;
     private bool _inhabilited;
 
@@ -25,7 +20,7 @@ public class EnemyController : Updateable
     {
         _enemyModel = GetComponent<EnemyModel>();
         _layerTarget = LayerMask.NameToLayer("Player");
-        SetCooldown();
+        SetCooldownShoot();
     }
 
     public override void CustomUpdate()
@@ -68,7 +63,7 @@ public class EnemyController : Updateable
         bool hasCollision = _enemyModel.DetectCollision(1);
         if (hasCollision && canMove) 
         {                 
-            targetCached = _enemyModel.Colls[0].gameObject.layer == _layerTarget;  ///LAZY COMPUTATION ///CACHING
+            _targetCached = _enemyModel.Colls[0].gameObject.layer == _layerTarget;  ///LAZY COMPUTATION ///CACHING
             canMove = false;
         }
 
@@ -78,7 +73,7 @@ public class EnemyController : Updateable
     /// <LazyComputation>
     public void HandleDeathCollision()
     {
-        if (targetCached) ///LAZY COMPUTATION
+        if (_targetCached) ///LAZY COMPUTATION
         {       
             foreach (var item in _enemyModel.Colls)
             {
@@ -86,7 +81,7 @@ public class EnemyController : Updateable
                 {
                     if (item.gameObject.layer == _layerTarget)
                     {
-                        targetCached = false;
+                        _targetCached = false;
                         _inhabilited = true;
                     }
                 }
@@ -115,25 +110,25 @@ public class EnemyController : Updateable
 
     public void TimerToShoot()
     {
-        _currentCooldown -= Time.deltaTime;
-        if (_currentCooldown < 1)
+        _currTimeShoot -= Time.deltaTime;
+        if (_currTimeShoot < 1)
         {
             var bulletPool = GameManager.BulletPool;
-            _enemyModel.Shoot(bulletPool);
-            _currentCooldown = _cooldown;
+            _enemyModel.Shoot(bulletPool,_layerTarget);
+            _currTimeShoot = _cooldownShoot;
         }
     }
 
-    public void SetCooldown()
+    public void SetCooldownShoot()
     {
-        _currentCooldown = _cooldown;
+        _currTimeShoot = _cooldownShoot;
     }
 
     private void OnEnable()
     {     
         GameManager.Instance?.CheckIfPoolNotEmpty();
         _direction = transform.forward;
-        SetCooldown();
+        SetCooldownShoot();
 
     }
  

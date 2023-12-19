@@ -20,8 +20,8 @@ public class UpdateManager : MonoBehaviour
 
     private void Update()
     { 
-        var count = _objsToUpdate.Count;  //*QUEST [Porque es necesario almacenar en una variable temporal el dato?]
-        for (int i = 0; i < count; i++) /// y no hacer: for (int i = 0; i < *objsToUpdate.Length; i++)
+        var count = _objsToUpdate.Count;  //*QUEST [Porque es necesario guardarlo en una variable?]
+        for (int i = 0; i < count; i++) 
         {
             _objsToUpdate[i].CustomUpdate();       
         }
@@ -33,7 +33,6 @@ public class UpdateManager : MonoBehaviour
             _objsToUpdate.Add(obj);
         }      
     }
-
     public void Remove(Updateable obj)
     {
         if (_objsToUpdate.Contains(obj))

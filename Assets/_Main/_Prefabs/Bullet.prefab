@@ -129,3 +129,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _timeToDeactivate: 5
   _speed: 40
+  _radius: 2
