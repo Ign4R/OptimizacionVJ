@@ -5,7 +5,7 @@ public class EnemyController : Updateable
     [SerializeField] private float _maxStuckTime = 0.5f;
    
     private EnemyModel _enemyModel;
-
+    private bool _enabledParent;
     private float _stuckTime;
     private float _currTimeShoot;
     private int _layerTarget;
@@ -19,12 +19,14 @@ public class EnemyController : Updateable
     public override void Awake()
     {
         _enemyModel = GetComponent<EnemyModel>();
+       _enabledParent = transform.parent == null || transform.parent.gameObject.activeInHierarchy;
     }
     public override void Start()
     {
+        base.Start();     
         _layerTarget = LayerMask.NameToLayer("Player");
         SetCooldownShoot();
-        base.Start();     
+       
     }
     public override void CustomUpdate()
     {
@@ -37,9 +39,11 @@ public class EnemyController : Updateable
         {
             Recycle();
         }
-    
-        if (transform.parent.gameObject.activeInHierarchy && gameObject.activeInHierarchy) //TODO
-        {           
+
+
+        if (_enabledParent && gameObject.activeInHierarchy)  //TODO
+        {
+            print("enable parent");
             CheckStuckFrames();
             TimerToShoot();
             MoveEntity();

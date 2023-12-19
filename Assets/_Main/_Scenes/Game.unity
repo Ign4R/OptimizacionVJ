@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18331961, g: 0.2289449, b: 0.3062359, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2009,7 +2009,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6388716523076839898, guid: 9ad5ab10f4bfee44ca8f2ce86b212646, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6388716523076839898, guid: 9ad5ab10f4bfee44ca8f2ce86b212646, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2366,7 +2366,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &623171180
 GameObject:
@@ -2854,7 +2854,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 36.036, y: -128.061, z: -136.578}
 --- !u!1 &712011547
 GameObject:
@@ -4278,14 +4278,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _popUp: {fileID: 355871126}
   _uiManager: {fileID: 1800963301}
-  _maxGoals: 100
+  _maxGoals: 1
   _waitTimeToSpawn: 6
   _bulletsInPool: 12
   _enemiesInPool: 5
+  _canRunSpawn: 1
   _posSpawnEnemies: {fileID: 1029667632}
   _parentBullets: {fileID: 2066611853}
   _bullet: {fileID: 388889151532357125, guid: b8d242c7d45231442a3b9f229f601e7f, type: 3}
   _enemy: {fileID: 6388716524334034209, guid: 90e51483ba347b44ebc8dc4d2debe90d, type: 3}
+  _player: {fileID: 1874970691}
 --- !u!1 &1211293908
 GameObject:
   m_ObjectHideFlags: 0
@@ -6753,6 +6755,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1853046395}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1874970691 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6388716523076839900, guid: 9ad5ab10f4bfee44ca8f2ce86b212646, type: 3}
+  m_PrefabInstance: {fileID: 508493012}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 911131192448a014786a527603296431, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1898546549
 GameObject:
   m_ObjectHideFlags: 0

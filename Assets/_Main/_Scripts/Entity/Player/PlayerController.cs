@@ -4,6 +4,9 @@ public class PlayerController : Updateable
     private PlayerModel _playerModel;
     private int _layTarget;
     private bool _inhabilited;
+    private bool _gameOver;
+
+    public bool GameOver { set => _gameOver = value; }
 
     public override void Awake()
     {
@@ -17,25 +20,23 @@ public class PlayerController : Updateable
     }
     public override void CustomUpdate()
     {
-        if(!_inhabilited)
+        if(!_inhabilited && !_gameOver)
         {
             HandleDeathCollision();
+            var dir = GetInputDir();
+            if (dir.magnitude != 0)
+            {
+                _playerModel.MoveAndRotate(dir, dir);
+            }
+            if (Input.GetMouseButtonDown(0))
+            {
+                var objPool = GameManager.BulletPool;
+                _playerModel.Shoot(objPool, _layTarget);
+            }
         }
-        else
+        else 
         {
             Respawn();
-        }
-
-        var dir = GetInputDir();
-
-        if (dir.magnitude != 0) 
-        {
-            _playerModel.MoveAndRotate(dir,dir);
-        }
-        if(Input.GetMouseButtonDown(0))
-        {
-            var objPool = GameManager.BulletPool;
-            _playerModel.Shoot(objPool,_layTarget);
         }
     }
     public void Respawn()
@@ -66,10 +67,13 @@ public class PlayerController : Updateable
     {     
         bool hasCollision = _playerModel.DetectCollision();
         if (hasCollision)
-        {
-    
+        {   
             _inhabilited = true;
         }
     }
 
+    public void Disabled()
+    {
+        _gameOver = false;
+    }
 }

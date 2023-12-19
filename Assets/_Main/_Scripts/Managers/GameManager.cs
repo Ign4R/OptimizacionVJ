@@ -3,13 +3,18 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : Updateable
 {
+    [Header("UI")]
     [SerializeField] private GameObject _popUp;
     [SerializeField] private UIManager _uiManager;
-    [SerializeField] private int _maxGoals;
+
+    [Header("Globals")]
+    [SerializeField][Range(1,100)] private int _maxGoals;
     [SerializeField] float _waitTimeToSpawn = 5f;
     [SerializeField] private int _bulletsInPool = 10;
     [SerializeField] private int _enemiesInPool = 100;
+    [SerializeField] private bool _canRunSpawn;
 
+    [Header("Parents")]
     [SerializeField] private Transform _posSpawnEnemies; 
     [SerializeField] private Transform _parentBullets;
 
@@ -17,13 +22,17 @@ public class GameManager : Updateable
     [SerializeField] private Updateable _bullet;
     [SerializeField] private Updateable _enemy;
 
+    [Header("Reference")]
+    [SerializeField] private PlayerController _player;
+
     private float _currTimeSpawn;
 
-    public bool CanRunSpawn { get; private set; }
     public static ObjectPool<Updateable> BulletPool { get ; private set ; }
     public static ObjectPool<Updateable> EnemyPool { get ; private set ; }
     public static GameManager Instance { get; private set; }
     public int EntityDefeat { get ; private set ; }
+
+    public bool IsActiveParentEnemies { get => _parentBullets.gameObject.activeInHierarchy; }
 
     public override void Awake()
     {
@@ -35,7 +44,7 @@ public class GameManager : Updateable
         {
             InitializationPool();
             Instance = this;
-            CanRunSpawn = true;
+            //_canRunSpawn = true;
             _currTimeSpawn = _waitTimeToSpawn;
 
         }
@@ -54,7 +63,7 @@ public class GameManager : Updateable
 
     public void TimerToSpawn()
     {      
-        if (CanRunSpawn)
+        if (_canRunSpawn)
         {
             _currTimeSpawn += Time.deltaTime;
             if (_currTimeSpawn >= _waitTimeToSpawn)
@@ -72,17 +81,18 @@ public class GameManager : Updateable
         _uiManager.UpdateEnemiesDefeat();
         if (EntityDefeat >= _maxGoals)
         {
+            _player.GameOver = true;
+            _parentBullets.gameObject.SetActive(false);
             _posSpawnEnemies.gameObject.SetActive(false);
-            CanRunSpawn = false;
+            _canRunSpawn = false;
             _popUp.SetActive(true);
-            //TODO: Pop.Up GameOver Screen
         }
     }
 
     public void CheckIfPoolNotEmpty()
     {
         int countPool = EnemyPool.GetCountPool();  
-        CanRunSpawn = countPool > 0;
+        _canRunSpawn = countPool > 0;
     }
 
     public void ReturnMainScreen()
