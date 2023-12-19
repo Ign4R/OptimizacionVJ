@@ -1,9 +1,9 @@
 using UnityEngine;
 public class EnemyModel : BaseModel, IDestroyable
 {
-    public override void Awake()
+    public override void Initialization()
     {
-        base.Awake();
+        base.Initialization();
         _layColls = 1 << LayerMask.NameToLayer("Enemy") | (1 << LayerMask.NameToLayer("Player"));
     }
     public Vector3 GetRandomDir()
@@ -23,13 +23,15 @@ public class EnemyModel : BaseModel, IDestroyable
                 return Vector3.zero;
         }
     }
-    public void Die()
+    public void Die(bool dieForBullet = false)
     {
-        GameManager.Instance.EnemyPool.ReturnToPool(this);
+        GameManager.EnemyPool.ReturnToPool(this);
         GameManager.Instance.CheckIfPoolNotEmpty();
-        GameManager.CounterEntity();
+        if (dieForBullet)
+        {
+            GameManager.Instance.EntityCounter();
+        }
     }
-
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;

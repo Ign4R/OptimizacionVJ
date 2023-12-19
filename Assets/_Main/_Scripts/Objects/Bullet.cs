@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
-
 public class Bullet : Updateable
-{
-    [SerializeField] 
-    private float _timeToDeactivate = 10;
+{  
     [SerializeField] 
     private float _speed = 40;
     [SerializeField]
@@ -15,18 +12,20 @@ public class Bullet : Updateable
 
     private int _layTarget;
     private int _layerWall;
-    private float _currentTime=0;
     private bool _hit;
+    //private float _currentTime=0;
+    //[SerializeField] 
+    //private float _timeToDeactivate = 10;
 
-    private void Awake()
+    public override void Awake()
     {
-        _layerWall = LayerMask.NameToLayer("Wall");
         _rb = GetComponent<Rigidbody>();
     }
     public override void Start()
     {
-        base.Start();
+        _layerWall = LayerMask.NameToLayer("Wall");
         _onCollision = new OnCollisionNonAloc(_radius, _colls);
+        base.Start();
     }
     public void SetTarget(int layerTarget)
     {
@@ -35,8 +34,7 @@ public class Bullet : Updateable
     public override void CustomUpdate()
     {
         Travel();
-        DetectCollision();
-        
+        DetectCollision();        
     }
     public void DetectCollision()
     {      
@@ -50,7 +48,7 @@ public class Bullet : Updateable
                 if (coll.TryGetComponent<IDestroyable>(out var target))
                 {
                     ReturnBullet();
-                    target.Die();
+                    target.Die(true);
                     _hit = true;
                 }
             }
@@ -79,10 +77,10 @@ public class Bullet : Updateable
         //}
     }
 
-    public void Timer()
-    {
-        _currentTime += Time.deltaTime;
-    }
+    //public void Timer()
+    //{
+    //    _currentTime += Time.deltaTime;
+    //}
 
     public void ReturnBullet()
     {
@@ -97,8 +95,7 @@ public class Bullet : Updateable
         _hit = false;
     }
 
-
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.black;
         Gizmos.DrawWireSphere(transform.position, _radius);

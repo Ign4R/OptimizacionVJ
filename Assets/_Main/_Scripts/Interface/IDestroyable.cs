@@ -1,4 +1,4 @@
 ﻿public interface IDestroyable 
 {
-    void Die();
+    void Die(bool dieForBullet = false);
 }

@@ -2,14 +2,15 @@ using UnityEngine;
 public class PlayerModel : BaseModel, IDestroyable
 {
     private Vector3 _posSpawn;
-    public override void Awake()
+    public override void Initialization()
     {
-        base.Awake();
+        base.Initialization();
         _layColls = 1 << LayerMask.NameToLayer("Enemy"); ///Caching :D
     }
-    public void Die()
+    public void Die(bool dieForBullet = false)
     {
-        transform.position = _posSpawn;    
+        transform.position = _posSpawn;
+        transform.rotation = Quaternion.identity;
     }
   
     public void SetPosSpawn(Vector3 pos)

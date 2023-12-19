@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 /// <Stack>
 /// Al utilizar un enfoque modular para cada enemigo, reducimos las llamadas a funciones
@@ -22,14 +21,18 @@ public class BaseModel : Updateable  ///Especializacion derivando
     public Rigidbody Rb { get ; private set ; }
     public Collider[] Colls { get => _colls; set => _colls = value; }
 
-    public virtual void Awake()
+    public override void Awake()
     {
-        Rb = GetComponent<Rigidbody>();     
+        Rb = GetComponent<Rigidbody>();
     }
     public override void Start()
-    {
+    {      
+        Initialization();
         base.Start();
-        OnCollisionNonAloc = new OnCollisionNonAloc(_radius, _colls);
+    }
+    public virtual void Initialization()
+    {
+        OnCollisionNonAloc = new OnCollisionNonAloc(_radius, _colls);     
     }
     public void MoveAndRotate(Vector3 dir, Vector3 rotDir)
     {

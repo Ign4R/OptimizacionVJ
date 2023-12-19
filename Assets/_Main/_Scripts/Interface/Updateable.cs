@@ -1,7 +1,11 @@
 using UnityEngine;
 
-public class Updateable : MonoBehaviour 
+public class Updateable : MonoBehaviour
 {
+    public virtual void Awake()
+    {
+
+    }
     public virtual void Start()
     {
         UpdateManager.Instance.Add(this);

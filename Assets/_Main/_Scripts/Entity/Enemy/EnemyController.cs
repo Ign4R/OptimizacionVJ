@@ -16,13 +16,16 @@ public class EnemyController : Updateable
     private Vector3 _lastPosition;
     private Vector3 _direction;
 
-    private void Awake()
+    public override void Awake()
     {
         _enemyModel = GetComponent<EnemyModel>();
+    }
+    public override void Start()
+    {
         _layerTarget = LayerMask.NameToLayer("Player");
         SetCooldownShoot();
+        base.Start();     
     }
-
     public override void CustomUpdate()
     {
         if (!_inhabilited)
@@ -30,13 +33,12 @@ public class EnemyController : Updateable
             CheckCollisionEntity();
             HandleDeathCollision();
         }
-
         else
         {
             Recycle();
         }
-
-        if (gameObject.activeSelf)
+    
+        if (transform.parent.gameObject.activeInHierarchy|| gameObject.activeInHierarchy) //TODO
         {           
             CheckStuckFrames();
             TimerToShoot();

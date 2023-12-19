@@ -5,15 +5,15 @@ public class PlayerController : Updateable
     private int _layTarget;
     private bool _inhabilited;
 
-    private void Awake()
-    {      
+    public override void Awake()
+    {
         _playerModel = GetComponent<PlayerModel>();
-        _layTarget = LayerMask.NameToLayer("Enemy");
     }
     public override void Start()
-    {
-        base.Start();      
+    {   
+        _layTarget = LayerMask.NameToLayer("Enemy");
         _playerModel.SetPosSpawn(transform.position);    
+        base.Start();
     }
     public override void CustomUpdate()
     {
@@ -39,7 +39,7 @@ public class PlayerController : Updateable
         }
     }
     public void Respawn()
-    {
+    {    
         _playerModel.Die();
         _inhabilited = false;
     }

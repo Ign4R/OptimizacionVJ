@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
+
 public class GameManager : Updateable
-{  
+{
+    [SerializeField] private GameObject _popUp;
+    [SerializeField] private UIManager _uiManager;
     [SerializeField] private int _maxGoals;
     [SerializeField] float _waitTimeToSpawn = 5f;
     [SerializeField] private int _bulletsInPool = 10;
@@ -17,12 +21,11 @@ public class GameManager : Updateable
 
     public bool CanRunSpawn { get; private set; }
     public static ObjectPool<Updateable> BulletPool { get ; private set ; }
-    public ObjectPool<Updateable> EnemyPool { get ; private set ; }
+    public static ObjectPool<Updateable> EnemyPool { get ; private set ; }
     public static GameManager Instance { get; private set; }
-    public static int EntityCount { get ; private set ; }
-    public static int MaxGoals { get ; private set; }
+    public int EntityDefeat { get ; private set ; }
 
-    private void Awake()
+    public override void Awake()
     {
         if (Instance != null && Instance != this)
         {
@@ -32,7 +35,6 @@ public class GameManager : Updateable
         {
             InitializationPool();
             Instance = this;
-            MaxGoals = _maxGoals;
             CanRunSpawn = true;
             _currTimeSpawn = _waitTimeToSpawn;
 
@@ -64,19 +66,30 @@ public class GameManager : Updateable
             }
         }
     }
-    public static void CounterEntity()
+    public void EntityCounter()
     {
-        EntityCount++;
-        if (EntityCount >= MaxGoals)
+        EntityDefeat++;
+        _uiManager.UpdateEnemiesDefeat();
+        if (EntityDefeat >= _maxGoals)
         {
+            _posSpawnEnemies.gameObject.SetActive(false);
+            CanRunSpawn = false;
+            _popUp.SetActive(true);
             //TODO: Pop.Up GameOver Screen
         }
     }
+
     public void CheckIfPoolNotEmpty()
     {
         int countPool = EnemyPool.GetCountPool();  
         CanRunSpawn = countPool > 0;
     }
+
+    public void ReturnMainScreen()
+    {
+        SceneManager.LoadScene("Menu");
+    }
+ 
     public static FactoryObject<Updateable> CreateFactory(Transform parent, Updateable prefab)
     {
         FactoryObject<Updateable> bulletFactory = new FactoryObject<Updateable>(prefab, parent);
