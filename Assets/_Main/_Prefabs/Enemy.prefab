@@ -65,7 +65,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd33159d10d3b5346b29fc7f97453f46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cooldown: 4
+  _cooldownShoot: 4
   _maxStuckTime: 0.3
 --- !u!114 &6388716524334034208
 MonoBehaviour:

@@ -38,7 +38,7 @@ public class EnemyController : Updateable
             Recycle();
         }
     
-        if (transform.parent.gameObject.activeInHierarchy|| gameObject.activeInHierarchy) //TODO
+        if (transform.parent.gameObject.activeInHierarchy && gameObject.activeInHierarchy) //TODO
         {           
             CheckStuckFrames();
             TimerToShoot();

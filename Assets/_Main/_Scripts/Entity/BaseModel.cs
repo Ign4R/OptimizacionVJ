@@ -15,7 +15,7 @@ public class BaseModel : Updateable  ///Especializacion derivando
 
     protected int _layColls;
 
-    private static Collider[] _colls = new Collider[3];
+    private Collider[] _colls = new Collider[2];
 
     public OnCollisionNonAloc OnCollisionNonAloc { get; protected set; }
     public Rigidbody Rb { get ; private set ; }

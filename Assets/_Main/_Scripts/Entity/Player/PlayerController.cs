@@ -67,6 +67,7 @@ public class PlayerController : Updateable
         bool hasCollision = _playerModel.DetectCollision();
         if (hasCollision)
         {
+    
             _inhabilited = true;
         }
     }
