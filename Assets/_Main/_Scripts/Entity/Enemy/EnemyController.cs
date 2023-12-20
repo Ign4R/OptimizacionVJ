@@ -42,8 +42,7 @@ public class EnemyController : Updateable
 
 
         if (_enabledParent && gameObject.activeInHierarchy)  //TODO
-        {
-            print("enable parent");
+        {        
             CheckStuckFrames();
             TimerToShoot();
             MoveEntity();
@@ -51,7 +50,7 @@ public class EnemyController : Updateable
     }
 
     public void Recycle()
-    {     
+    {
         _enemyModel.Die();
         _inhabilited = false;
     }
@@ -131,7 +130,7 @@ public class EnemyController : Updateable
     }
 
     private void OnEnable()
-    {     
+    {
         GameManager.Instance?.CheckIfPoolNotEmpty();
         _direction = transform.forward;
         SetCooldownShoot();
