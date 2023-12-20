@@ -15,6 +15,35 @@ MonoBehaviour:
   version: 3252
   resultType: 0
   materialsAndUVRects:
+  - material: {fileID: 2100000, guid: 6e588e77150bbe24b90d81932988e8d8, type: 2}
+    atlasRect:
+      serializedVersion: 2
+      x: 0.0009765625
+      y: 0.50097656
+      width: 0.4873047
+      height: 0.21289062
+    srcObjName: Tank_fbx
+    textureArraySliceIdx: -1
+    allPropsUseSameTiling: 1
+    allPropsUseSameTiling_sourceMaterialTiling:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 1
+      height: 1
+    allPropsUseSameTiling_samplingEncapsulatinRect:
+      serializedVersion: 2
+      x: 0.008109763
+      y: 0.5671354
+      width: 0.97472656
+      height: 0.42629158
+    propsUseDifferntTiling_srcUVsamplingRect:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    tilingTreatment: 1
   - material: {fileID: 2100000, guid: 2bc54f6992b8dfc49b0a156b8b431058, type: 2}
     atlasRect:
       serializedVersion: 2
@@ -44,14 +73,14 @@ MonoBehaviour:
       width: 0
       height: 0
     tilingTreatment: 1
-  - material: {fileID: 2100000, guid: 2ee2ab899e91cb14e8b0dcd7f7d6efcd, type: 2}
+  - material: {fileID: 2100000, guid: 9553f134e6d4dda49afd069db4be722d, type: 2}
     atlasRect:
       serializedVersion: 2
       x: 0.50097656
       y: 0.0009765625
       width: 0.49804688
       height: 0.49804688
-    srcObjName: Grid
+    srcObjName: Floor
     textureArraySliceIdx: -1
     allPropsUseSameTiling: 1
     allPropsUseSameTiling_sourceMaterialTiling:
@@ -66,35 +95,6 @@ MonoBehaviour:
       y: 0
       width: 1
       height: 1
-    propsUseDifferntTiling_srcUVsamplingRect:
-      serializedVersion: 2
-      x: 0
-      y: 0
-      width: 0
-      height: 0
-    tilingTreatment: 1
-  - material: {fileID: 2100000, guid: 6e588e77150bbe24b90d81932988e8d8, type: 2}
-    atlasRect:
-      serializedVersion: 2
-      x: 0.0009765625
-      y: 0.50097656
-      width: 0.4873047
-      height: 0.10644531
-    srcObjName: Tank_fbx
-    textureArraySliceIdx: -1
-    allPropsUseSameTiling: 1
-    allPropsUseSameTiling_sourceMaterialTiling:
-      serializedVersion: 2
-      x: 0
-      y: 0
-      width: 1
-      height: 1
-    allPropsUseSameTiling_samplingEncapsulatinRect:
-      serializedVersion: 2
-      x: 0.008109763
-      y: 0.5671354
-      width: 0.97472656
-      height: 0.42629158
     propsUseDifferntTiling_srcUVsamplingRect:
       serializedVersion: 2
       x: 0
@@ -106,8 +106,8 @@ MonoBehaviour:
   - combinedMaterial: {fileID: 2100000, guid: d6d94d3467272a84d82a3fe6fb440d32, type: 2}
     considerMeshUVs: 1
     sourceMaterials:
-    - {fileID: 2100000, guid: 2bc54f6992b8dfc49b0a156b8b431058, type: 2}
-    - {fileID: 2100000, guid: 2ee2ab899e91cb14e8b0dcd7f7d6efcd, type: 2}
     - {fileID: 2100000, guid: 6e588e77150bbe24b90d81932988e8d8, type: 2}
+    - {fileID: 2100000, guid: 2bc54f6992b8dfc49b0a156b8b431058, type: 2}
+    - {fileID: 2100000, guid: 9553f134e6d4dda49afd069db4be722d, type: 2}
   resultMaterialsTexArray: []
   doMultiMaterial: 0
