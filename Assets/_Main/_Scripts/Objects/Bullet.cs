@@ -23,9 +23,9 @@ public class Bullet : Updateable
     }
     public override void Start()
     {
+        base.Start();
         _layerWall = LayerMask.NameToLayer("Wall");
         _onCollision = new OnCollisionNonAloc(_radius, _colls);
-        base.Start();
     }
     public void SetTarget(int layerTarget)
     {
