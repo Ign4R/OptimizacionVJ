@@ -6,6 +6,7 @@ public class MB_SwitchBakedObjectsTexture : MonoBehaviour {
     // The target renderer where we will switch materials.
     public MeshRenderer targetRenderer;
 
+    public bool can;
     // The list of materials to cycle through.
     public Material[] materials;
 

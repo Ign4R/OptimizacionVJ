@@ -20,10 +20,22 @@ SpriteAtlas:
       readable: 0
       crunchedCompression: 0
       sRGB: 1
-    platformSettings: []
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 1024
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
     packingSettings:
       serializedVersion: 2
-      padding: 4
+      padding: 2
       blockOffset: 1
       allowAlphaSplitting: 0
       enableRotation: 1
@@ -31,13 +43,25 @@ SpriteAtlas:
       enableAlphaDilation: 0
     secondaryTextureSettings: {}
     variantMultiplier: 1
-    packables: []
+    packables:
+    - {fileID: 2800000, guid: dd05bca8882cec741a2e8626967e6df5, type: 3}
+    - {fileID: 2800000, guid: 23e820d1118c0a247af65a92dfce9ced, type: 3}
+    - {fileID: 2800000, guid: ba5acd2285c7f7c49a3f0c52e25cfcaa, type: 3}
+    - {fileID: 2800000, guid: 96035f0e32b720e49a7ff551c09cf02b, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
-  m_PackedSprites: []
-  m_PackedSpriteNamesToIndex: []
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 23e820d1118c0a247af65a92dfce9ced, type: 3}
+  - {fileID: 21300000, guid: ba5acd2285c7f7c49a3f0c52e25cfcaa, type: 3}
+  - {fileID: 21300000, guid: dd05bca8882cec741a2e8626967e6df5, type: 3}
+  - {fileID: 21300000, guid: 96035f0e32b720e49a7ff551c09cf02b, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - stuccoyellow
+  - tankGradient
+  - brick
+  - tankIcon
   m_RenderDataMap: {}
   m_Tag: textures
   m_IsVariant: 0
